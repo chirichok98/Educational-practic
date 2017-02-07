@@ -1,0 +1,18 @@
+$ git log
+commit fa2edb5238a9ed4458c5178f3f9f25d4c847b131
+Author: Mikhail.Chirich <chirichok@gmail.com>
+Date:   Tue Feb 7 12:17:28 2017 +0300
+
+    add status.txt
+
+commit 1ce8726725f4a3dfc9811d0d7dcc722d4388ad49
+Author: Mikhail.Chirich <chirichok@gmail.com>
+Date:   Tue Feb 7 12:13:17 2017 +0300
+
+    add .gitignore
+
+commit fe4fdfcc9f931e31d354e5cfb6d393eb82066f8d
+Author: chirichok98 <chirichok98@gmail.com>
+Date:   Tue Feb 7 11:25:49 2017 +0300
+
+    Initial commit
