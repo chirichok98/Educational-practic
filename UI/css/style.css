@@ -52,8 +52,8 @@ body {
 }
 
 .round {
-    border-radius: 50%; /* Радиус скругления */
-    border: 2px solid #FFC125; /* Параметры рамки */
+    border-radius: 50%;
+    border: 2px solid #FFC125;
     margin: 10px;
 }
 
