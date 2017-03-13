@@ -3,335 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width: device-width, initial-scale=1">
-    <title>Новости.by</title>
+    <title>World '24/7'</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/dropdowns.css">
+    <link rel="stylesheet" href="css/media.css">
+    <script src="scripts/script.js"></script>
+    <script src="scripts/transformations.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 </head>
 <body>
-
 <!-- header  -->
 <header id="header">
-    <div id="div-navbar">
-        <a href="index.html">
-            <img class="logotype-photo" src="img/step.png" alt="logotype">
-        </a>
-        <div class="box hidden">
-            <div class="container">
-                <input type="search" id="search" placeholder="Поиск..." />
-                <button class="icon"><i class="fa fa-search"></i></button>
+    <div id="head-container">
+        <div id="logotype"><a><img class="logotype-photo" src="images/logo.png"
+                                   alt="WORLD 24/7"></a></div>
+        <div id="head-menu">
+            <ul id="burger" class="categories">
+                <li><a href="#" class="category">Политика</a></li>
+                <li><a href="#" class="category">Экономика</a></li>
+                <li><a href="#" class="category">Спорт</a></li>
+                <li><a href="#" class="category search"><i class="fa fa-search"></i></a></li>
+                <li><a href="#" class="category">Культура</a></li>
+                <li><a href="#" class="category">Общество</a></li>
+                <li><a href="#" class="category">Здоровье</a></li>
+                <li class="icon">
+                    <a onclick="menu_transform_function()"><i class="fa fa-bars"></i></a>
+                </li>
+            </ul>
+            <div id="user-information">
+                <i onclick="user_dropdown_function()" class="fa fa-user-circle-o dropbutton"></i>
+                <div id="user-content" class="dropdown-content">
+                    <div class="log-in">
+                        <div class="dropdown-header">
+                            Неавторизованный пользователь
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item last">Войти</button>
+                    </div>
+                    <div class="log-out display-none">
+                        <div class="dropdown-header">
+                            Здравствуйте,
+                            <p class="name"> Mikhail Chirich</p>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item">Добавить новость</button>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item last">Выйти</button>
+                    </div>
+                </div>
             </div>
         </div>
-        <span class="user">
-            <img id="user-photo" class="round" src="img/user.png" alt="user">
-            <span class="name">Hi,Mikhail</span>
-            <a href="#"><div class="log-out">Выйти</div></a>
-        </span>
     </div>
 </header>
 
-<!-- кнопки: добавить, фильтр   -->
-<div id="buttons">
-    <span>
-        <a href="#"><img class="round filter" src="img/filter.png" alt="filter"></a>
-    </span>
-    <span>
-        <a href="#"><img class="round add" src="img/add.png" alt="add"></a>
-    </span>
+<div class="filter">
+    <form>
+        <label>Автор:</label>
+        <input id="filter-author" type="text" placeholder="Mikhail Chirich" onkeyup="filterFunction()">
+        <label>Теги:</label>
+        <input id="filter-tags" type="text" placeholder="#политика #спорт">
+        <label>Дата:</label>
+        <input id="filter-date-from" type="date">
+        <input id="filter-date-to" type="date">
+        <button onclick="filter_function()" class="filter-button">Применить</button>
+    </form>
 </div>
+<!-- posts -->
+<main id="main-page"></main>
 
-<!-- лента новостей   -->
-<main class="posts">
+<div class="clearfix"></div>
 
-    <a href="#" class="content">
-        <img class="content-photo" src="img/picture1.jpg" alt="стихия" align="left">
-        <h4 class="content-topic">Phasellus risus</h4>
-        <p class="content-text">Cras a velit tortor. Fusce suscipit nulla lorem, et placerat eros viverra fusce.</p>
+<template id="template-article">
+    <a href="#" class="content" id="id">
+        <img class="content-photo" src=""
+             alt="стихия">
+        <h4 class="content-title">Topic</h4>
+        <p class="content-summary">Summary</p>
+        <p class="content-text">text</p>
         <div class="addition-text">
-            <p class="content-tags">#иньяньсоприкосновени #иньяньсоприкосновени #иньяньсоприкосновени</p>
-            <span class="content-creater">Создал(а) Mikhail Chirich</span>
-            <span class="content-date">26.02.2017</span>
+            <div>Тема: <span class="content-tags">#tags</span></div>
+            <div>Автор: <span class="content-creater">Konstantin Trush</span></div>
+            <div>Публикация от <span class="content-date">01.01.2016 05:48</span></div>
         </div>
-        <div class="addition-buttons">
-            <button type="button" name="edit" class="edit-new" href="#">
-                <img src="img/edit.png" alt="edit">
+        <div class="addition-buttons display-none">
+            <button type="button" name="edit" class="edit-new">
+                <i class="fa fa-pencil-square-o"></i>
             </button>
-            <button type="button" name="remove" class="remove-new" href="#">
-                <img src="img/remove.png" alt="remove">
-            </button>
-            <button type="button" name="show" class="show-new" href="#">
-                <img src="img/look.png" alt="show">
+            <button type="button" name="remove" class="remove-new">
+                <i class="fa fa-trash-o"></i>
             </button>
         </div>
     </a>
+</template>
+<!-- footer -->
 
-    <a href="#" class="content">
-        <img class="content-photo" src="img/picture2.jpg" alt="стихия" align="left">
-        <h4 class="content-topic">Pellentesque ullamcorper iaculis ornare. In hac habitasse platea dictums</h4>
-        <p class="content-text">Mauris nec massa rutrum, mollis elit pretium, venenatis nunc. Nunc tempor quis mi
-            ettempor.
-            Duis convallis eros nec neque pulvinar posuere.</p>
-        <div class="addition-text">
-            <p class="content-tags">#иньяньсоприкосновени #иньяньсоприкосновени #иньяньсоприкосновени</p>
-            <span class="content-creater">Создал(а) Vlad Karpovich</span>
-            <span class="content-date">24.01.2017</span>
-        </div>
-        <div class="addition-buttons">
-            <button type="button" name="edit" class="edit-new" href="#">
-                <img src="img/edit.png" alt="edit">
-            </button>
-            <button type="button" name="remove" class="remove-new" href="#">
-                <img src="img/remove.png" alt="remove">
-            </button>
-            <button type="button" name="show" class="show-new" href="#">
-                <img src="img/look.png" alt="show">
-            </button>
-        </div>
-    </a>
-
-    <a href="#" class="content">
-        <img class="content-photo" src="img/picture3.jpg" alt="стихия" align="left">
-        <h4 class="content-topic">Phasellus consectetur, purus sit amet pellentesque feugiat, elit turpis efficitur
-            nisi, at volutpat.
-        </h4>
-        <p class="content-text">
-            Fusce lobortis suscipit ante, vitae sodales odio sodales ut. Curabitur commodo convallis sem, vel
-            suscipit odio auctor quis. Donec sit amet dignissim ligula. Integer posuere.
-        </p>
-        <div class="addition-text">
-            <p class="content-tags">#иньянь #стихии #черный #красный #синий</p>
-            <span class="content-creater">Создал(а) Mikhail Chirich</span>
-            <span class="content-date">02.01.2017</span>
-        </div>
-        <div class="addition-buttons">
-            <button type="button" name="edit" class="edit-new" href="#">
-                <img src="img/edit.png" alt="edit">
-            </button>
-            <button type="button" name="remove" class="remove-new" href="#">
-                <img src="img/remove.png" alt="remove">
-            </button>
-            <button type="button" name="show" class="show-new" href="#">
-                <img src="img/look.png" alt="show">
-            </button>
-        </div>
-    </a>
-
-    <a href="#" class="content">
-        <img class="content-photo"
-             src="http://img1.liveinternet.ru/images/attach/c/4/81/172/81172275_large_3_olen_v_krasochnom_lesu.jpg"
-             alt="стихия" align="left">
-        <h4 class="content-topic">Fusce volutpat mi porttitor elit posuere pulvinar. Donec pretium est a sem porta, sit
-            sed.
-        </h4>
-        <p class="content-text">Nulla in ex sit amet libero hendrerit mollis sed in felis. Integer eu enim hendrerit,
-            porta mi sit amet, pellentesque sapien. Morbi bibendum tortor sit amet nulla massa nunc
-        </p>
-        <div class="addition-text">
-            <p class="content-tags">#иньянь #стихии #черный #красный #синий</p>
-            <span class="content-creater">Создал(а) Aleksei Voronov</span>
-            <span class="content-date">01.01.2017</span>
-        </div>
-        <div class="addition-buttons">
-            <button type="button" name="edit" class="edit-new" href="#">
-                <img src="img/edit.png" alt="edit">
-            </button>
-            <button type="button" name="remove" class="remove-new" href="#">
-                <img src="img/remove.png" alt="remove">
-            </button>
-            <button type="button" name="show" class="show-new" href="#">
-                <img src="img/look.png" alt="show">
-            </button>
-        </div>
-    </a>
-
-    <a href="#" class="content">
-        <img class="content-photo" src="img/picture5.jpg" alt="стихия" align="left">
-        <h4 class="content-topic">Mauris vulputate mi vel odio rhoncus, id mattis elit feugiat. Maecenas quis ipsum
-            posuere.
-        </h4>
-        <p class="content-text">Vivamus suscipit augue a accumsan feugiat. Ut sit amet turpis fringilla,
-            tincidunt sem vel, fermentum justo. Donec eu leo nullam.
-        </p>
-        <div class="addition-text">
-            <p class="content-tags">#иньянь #стихии #черный #красный #синий</p>
-            <span class="content-creater">Создал(а) Kristina Nikolina</span>
-            <span class="content-date">19.12.2016</span>
-        </div>
-        <div class="addition-buttons">
-            <button type="button" name="edit" class="edit-new" href="#">
-                <img src="img/edit.png" alt="edit">
-            </button>
-            <button type="button" name="remove" class="remove-new" href="#">
-                <img src="img/remove.png" alt="remove">
-            </button>
-            <button type="button" name="show" class="show-new" href="#">
-                <img src="img/look.png" alt="show">
-            </button>
-        </div>
-    </a>
-
-    <a href="#" class="content">
-        <img class="content-photo" src="img/picture4.jpg" alt="стихия" align="left">
-        <h4 class="content-topic">Maecenas non metus eget metus facilisis sagittis. Etiam vitae leo ligula turpis duis.
-        </h4>
-        <p class="content-text">Cras lobortis sapien sed nisl cursus, eu maximus tortor elementum. Vivamus a est nisi.
-            Sed venenatis diam id purus tincidunt, a consequat lacus volutpat. Aliquam vitae sem dignissim amet.
-        </p>
-        <div class="addition-text">
-            <p class="content-tags">#иньянь #стихии #черный #красный #синий</p>
-            <span class="content-creater">Создал(а) Mikhail Chirich</span>
-            <span class="content-date">08.08.2016</span>
-        </div>
-        <div class="addition-buttons">
-            <button type="button" name="edit" class="edit-new" href="#">
-                <img src="img/edit.png" alt="edit">
-            </button>
-            <button type="button" name="remove" class="remove-new" href="#">
-                <img src="img/remove.png" alt="remove">
-            </button>
-            <button type="button" name="show" class="show-new" href="#">
-                <img src="img/look.png" alt="show">
-            </button>
-        </div>
-    </a>
-
-    <a href="#" class="content">
-        <img class="content-photo" src="http://www.pirojok.net/uploads/posts/2011-09/1316983497_191120-1366x768.jpg"
-             alt="стихия" align="left">
-        <h4 class="content-topic">Donec accumsan eros posuere felis scelerisque convallis auctor id orci. Etiam nullam.
-        </h4>
-        <p class="content-text">Nullam suscipit ultrices semper. Mauris vel metus cursus tellus elementum
-            scelerisque in vel dolor. Curabitur ac dictum nulla, in tincidunt est. Etiam metus.
-        </p>
-        <div class="addition-text">
-            <p class="content-tags">#иньянь #стихии #черный #красный #синий</p>
-            <span class="content-creater">Создал(а) Vlad Karpovich</span>
-            <span class="content-date">07.06.2016</span>
-        </div>
-        <div class="addition-buttons">
-            <button type="button" name="edit" class="edit-new" href="#">
-                <img src="img/edit.png" alt="edit">
-            </button>
-            <button type="button" name="remove" class="remove-new" href="#">
-                <img src="img/remove.png" alt="remove">
-            </button>
-            <button type="button" name="show" class="show-new" href="#">
-                <img src="img/look.png" alt="show">
-            </button>
-        </div>
-    </a>
-
-    <a href="#" class="content">
-        <img class="content-photo"
-             src="http://img1.liveinternet.ru/images/attach/c/4/81/172/81172281_large_10_tainstvennuyy_les.jpg"
-             alt="стихия" align="left">
-        <h4 class="content-topic">Curabitur nec velit nibh. Suspendisse erat eros, aliquet ac diam quis, congue nullam.
-        </h4>
-        <p class="content-text">Donec faucibus vulputate convallis. Aliquam semper sem augue, sed rutrum libero
-            interdum convallis. Phasellus mollis lectus quis dui mattis, non turpis duis.
-        </p>
-        <div class="addition-text">
-            <p class="content-tags">#иньянь #стихии #черный #красный #синий</p>
-            <span class="content-creater">Создал(а) Mikhail Chirich</span>
-            <span class="content-date">08.04.2016</span>
-        </div>
-        <div class="addition-buttons">
-            <button type="button" name="edit" class="edit-new" href="#">
-                <img src="img/edit.png" alt="edit">
-            </button>
-            <button type="button" name="remove" class="remove-new" href="#">
-                <img src="img/remove.png" alt="remove">
-            </button>
-            <button type="button" name="show" class="show-new" href="#">
-                <img src="img/look.png" alt="show">
-            </button>
-        </div>
-    </a>
-
-    <a href="#" class="content">
-        <img class="content-photo"
-             src="http://www.pirojok.net/uploads/posts/2011-09/thumbs/1316983513_133827-1366x768.jpg"
-             alt="стихия" align="left">
-        <h4 class="content-topic">Vestibulum condimentum tortor nec eros pulvinar convallis. In tempor, risus nec amet
-        </h4>
-        <p class="content-text">Nullam efficitur ante id turpis molestie, ut fringilla felis scelerisque.
-            Nullam aliquam massa non est sagittis, nec varius diam cursus. Proin suscipit amet.
-        </p>
-        <div class="addition-text">
-            <p class="content-tags">#иньянь #стихии #черный #красный #синий</p>
-            <span class="content-creater">Создал(а) Evgeniya Basaranovich</span>
-            <span class="content-date">04.03.2016</span>
-        </div>
-        <div class="addition-buttons">
-            <button type="button" name="edit" class="edit-new" href="#">
-                <img src="img/edit.png" alt="edit">
-            </button>
-            <button type="button" name="remove" class="remove-new" href="#">
-                <img src="img/remove.png" alt="remove">
-            </button>
-            <button type="button" name="show" class="show-new" href="#">
-                <img src="img/look.png" alt="show">
-            </button>
-        </div>
-    </a>
-
-    <a href="#" class="content">
-        <img class="content-photo"
-             src="http://www.pirojok.net/uploads/posts/2011-09/thumbs/1316983526_197185-1366x768.jpg" alt="стихия"
-             align="left">
-        <h4 class="content-topic">Vestibulum faucibus iaculis nulla. Sed a turpis odio. Proin tempor a nisl sit nullam.
-        </h4>
-        <p class="content-text">Vestibulum vulputate tellus a tempus rhoncus. Morbi nec luctus sem.
-            Aliquam ut ultrices mauris, sit amet vehicula augue. Vivamus commodo vestibulum volutpat.
-        </p>
-        <div class="addition-text">
-            <p class="content-tags">#иньянь #стихии #черный #красный #синий</p>
-            <span class="content-creater">Создал(а) Konstantin Trush</span>
-            <span class="content-date">01.01.2016</span>
-        </div>
-        <div class="addition-buttons">
-            <button type="button" name="edit" class="edit-new" href="#">
-                <img src="img/edit.png" alt="edit">
-            </button>
-            <button type="button" name="remove" class="remove-new" href="#">
-                <img src="img/remove.png" alt="remove">
-            </button>
-            <button type="button" name="show" class="show-new" href="#">
-                <img src="img/look.png" alt="show">
-            </button>
-        </div>
-    </a>
-
-    <div class="clearfix"></div>
-
-    <div class="pagination">
-        <a href="#">&laquo;</a>
-        <a href="#" class="active-page">1</a>
-        <a href="#">2</a>
-        <a href="#">3</a>
-        <a href="#">4</a>
-        <a href="#">5</a>
-        <a href="#">&raquo;</a>
-    </div>
-
-
-
-
-</main>
-
-<!-- footer   -->
 <footer id="footer">
-    <div id="footer-bar">
-        <a href="index.html">
-            <img class="footer logotype-photo" src="img/step.png" alt="logotype">
-        </a>
-        <div class="footer-date">25.02.2017</div>
-        <span class="footer-name">
+    <ul id="footer-bar">
+
+        <li class="footer-date">
+            25.02.2017
+        </li>
+        <li>
+            <a href="index.html"><img class="logotype-photo footer-photo" src="images/logo.png" alt="logotype"></a>
+        </li>
+        <li class="footer-name">
             <div>Chirich Mikhail</div>
             <div>chirichok@gmail.com</div>
             <div>2-nd course 5-th group</div>
-        </span>
-    </div>
+        </li>
+    </ul>
 </footer>
 
 </body>
 </html>
+
+<!--<div class="pagination">
+         <button class="button-more">Показать еще</button>
+    </div>-->
