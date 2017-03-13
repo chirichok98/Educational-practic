@@ -1,0 +1,74 @@
+@media screen and (max-width: 768px) {
+
+    .dropdown-content {
+        font-size: 2vw;
+    }
+    .categories {
+        margin-left: 2%;
+    }
+
+    .categories li {
+        display: none;
+    }
+
+    .categories .icon {
+        float: left;
+
+        display: inline-block;
+    }
+
+    .categories .search {
+        display: none;
+    }
+
+    .categories {
+        font-size: 3vw;
+        color: #00243c;
+        text-decoration: none;
+    }
+
+    .categories:hover {
+        font-size: 3vw;
+        color: #FFB300;
+        text-decoration: none;
+        cursor: pointer;
+        outline: none;
+    }
+
+    #main-page {
+        margin-left: 2%;
+        width: 96%;
+    }
+
+    .content {
+        width: 98%;
+        margin-left: 1%;
+    }
+
+}
+
+/* burger */
+@media screen and (max-width: 768px) {
+    .responsive {
+        position: relative;
+    }
+
+    .responsive .icon {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    .responsive li {
+        float: none;
+        display: inline;
+    }
+
+    .responsive a {
+        display: block;
+        text-align: left;
+        margin: 0;
+        padding-left: 15%;
+        height: 15px;
+    }
+}

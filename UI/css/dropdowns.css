@@ -1,0 +1,69 @@
+/* begin Выпадающее меню для пользователя */
+.dropbutton {
+    color: #00243c;
+    padding: 4%;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.dropbutton:hover {
+    color: #FFB300;
+}
+
+.dropdown-header {
+    padding: 6px 10px 0 10px;
+    font-size: inherit;
+}
+
+.dropdown-header .name {
+    margin: 3px 4px 0 4px;
+    font-size: inherit;
+}
+
+.dropdown-divider {
+    height: 1px;
+    margin: 8px 1px;
+    background-color: #81C784;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+
+    right: 0;
+    margin-right: 0.5%;
+    min-width: 4.5vw;
+    box-shadow: 0 4px 6px 0 #A5D6A7;
+    font-size: 1vw;
+
+    border-radius: 4px;
+    background-color: #FBFEFF;
+    z-index: 1;
+}
+.dropdown-content button{
+    outline: 0;
+    border: 0;
+    background-color: transparent;
+}
+
+.dropdown-item {
+    color: #00243c;
+    padding: 0 10px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-item:hover {
+    color: #406380;
+}
+
+.last {
+    padding: 0 10px 6px 10px;
+}
+
+.show {
+    display: block;
+}
+
+/* end Выпадающее меню для пользователя */
