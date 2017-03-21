@@ -1,4 +1,4 @@
-var user = 'Mikhail Chirich'
+var user = 'Mikhail'
 var articleDOM = (function () {
     var ARTICLE_TEMPLATE;
     var ARTICLE_LIST_NODE;
@@ -7,12 +7,7 @@ var articleDOM = (function () {
         ARTICLE_TEMPLATE = document.querySelector('#template-article');
         ARTICLE_LIST_NODE = document.querySelector('#articles-wall');
     }
-    /*
-        function login() {
-            var loginForm = document.getElementsByName("loginForm")[0];
-            console.log(loginForm);
-        }
-    */
+
     function checkUser(user) {
         var articles = document.getElementsByClassName('addition-buttons');
         var login = document.getElementsByClassName('log-in')[0];
@@ -178,7 +173,6 @@ var articleDOM = (function () {
         removeTags: removeTags,
         show_filter: show_filter,
         show_menu: show_menu,
-        show_search: show_search,
-        //login: login
+        show_search: show_search
     };
 }());
