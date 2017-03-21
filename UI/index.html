@@ -7,9 +7,6 @@
     <title>World '24/7'</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/media.css">
-    <script src="scripts/article-model.js"></script>
-    <script src="scripts/article-dom.js"></script>
-    <script src="scripts/script.js"></script>
 </head>
 
 <body>
@@ -22,7 +19,7 @@
                     <input name="login" type="text" placeholder="Login">
                     <input name="passwort" type="text" placeholder="Passwort">
                 </div>
-                <button onclick="login_user()" id="login-button">Войти</button>
+                <button type="button" onclick="login_user()" id="login-button">Войти</button>
             </form>
         </div>
         <div class="log-out display-none">
@@ -137,6 +134,9 @@
         </div>
     </template>
 
+    <script src="scripts/article-model.js"></script>
+    <script src="scripts/article-dom.js"></script>
+    <script src="scripts/script.js"></script>
 </body>
 
 </html>
