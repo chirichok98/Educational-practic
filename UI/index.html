@@ -1,122 +1,142 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width: device-width, initial-scale=1">
     <title>World '24/7'</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/dropdowns.css">
     <link rel="stylesheet" href="css/media.css">
+    <script src="scripts/article-model.js"></script>
+    <script src="scripts/article-dom.js"></script>
     <script src="scripts/script.js"></script>
-    <script src="scripts/transformations.js"></script>
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 </head>
+
 <body>
-<!-- header  -->
-<header id="header">
-    <div id="head-container">
-        <div id="logotype"><a><img class="logotype-photo" src="images/logo.png"
-                                   alt="WORLD 24/7"></a></div>
-        <div id="head-menu">
-            <ul id="burger" class="categories">
-                <li><a href="#" class="category">Политика</a></li>
-                <li><a href="#" class="category">Экономика</a></li>
-                <li><a href="#" class="category">Спорт</a></li>
-                <li><a href="#" class="category search"><i class="fa fa-search"></i></a></li>
-                <li><a href="#" class="category">Культура</a></li>
-                <li><a href="#" class="category">Общество</a></li>
-                <li><a href="#" class="category">Здоровье</a></li>
-                <li class="icon">
-                    <a onclick="menu_transform_function()"><i class="fa fa-bars"></i></a>
-                </li>
-            </ul>
-            <div id="user-information">
-                <i onclick="user_dropdown_function()" class="fa fa-user-circle-o dropbutton"></i>
-                <div id="user-content" class="dropdown-content">
-                    <div class="log-in">
-                        <div class="dropdown-header">
-                            Неавторизованный пользователь
-                        </div>
-                        <div class="dropdown-divider"></div>
-                        <button class="dropdown-item last">Войти</button>
-                    </div>
-                    <div class="log-out display-none">
-                        <div class="dropdown-header">
-                            Здравствуйте,
-                            <p class="name"> Mikhail Chirich</p>
-                        </div>
-                        <div class="dropdown-divider"></div>
-                        <button class="dropdown-item">Добавить новость</button>
-                        <div class="dropdown-divider"></div>
-                        <button class="dropdown-item last">Выйти</button>
-                    </div>
+    <!-- USER -->
+    <div class="user">
+        <button id="button-user"></button>
+        <div class="log-in">
+            <form name="loginForm">
+                <div>
+                    <input name="login" type="text" placeholder="Login">
+                    <input name="passwort" type="text" placeholder="Passwort">
                 </div>
-            </div>
+                <button onclick="login_user()" id="login-button">Войти</button>
+            </form>
+        </div>
+        <div class="log-out display-none">
+            <form>
+                <div>
+                    <div class="name">Hi, <span class="user-name">Mikhail Chirich</span></div>
+                    <button onclick="openAddForm_function()" id="add-article-button">Добавить новость</button>
+                </div>
+                <button onclick="logout_function()" id="logout-button">Выйти</button>
+            </form>
         </div>
     </div>
-</header>
 
-<div class="filter">
-    <form>
-        <label>Автор:</label>
-        <input id="filter-author" type="text" placeholder="Mikhail Chirich" onkeyup="filterFunction()">
-        <label>Теги:</label>
-        <input id="filter-tags" type="text" placeholder="#политика #спорт">
-        <label>Дата:</label>
-        <input id="filter-date-from" type="date">
-        <input id="filter-date-to" type="date">
-        <button onclick="filter_function()" class="filter-button">Применить</button>
-    </form>
-</div>
-<!-- posts -->
-<main id="main-page"></main>
-
-<div class="clearfix"></div>
-
-<template id="template-article">
-    <a href="#" class="content" id="id">
-        <img class="content-photo" src=""
-             alt="стихия">
-        <h4 class="content-title">Topic</h4>
-        <p class="content-summary">Summary</p>
-        <p class="content-text">text</p>
-        <div class="addition-text">
-            <div>Тема: <span class="content-tags">#tags</span></div>
-            <div>Автор: <span class="content-creater">Konstantin Trush</span></div>
-            <div>Публикация от <span class="content-date">01.01.2016 05:48</span></div>
+    <!-- HEADER -->
+    <header>
+        <div class="logotype">
+            <img class="logotype-photo" src="images/logo.png" alt="logotype">
         </div>
-        <div class="addition-buttons display-none">
-            <button type="button" name="edit" class="edit-new">
-                <i class="fa fa-pencil-square-o"></i>
-            </button>
-            <button type="button" name="remove" class="remove-new">
-                <i class="fa fa-trash-o"></i>
-            </button>
+        <!-- HEADER-ALL-BUTTONS -->
+        <div class="header-container">
+            <div onclick="show_filter()" class="header-filter">
+                <button id="button-filter">
+            </div>
+            <div onclick="show_menu()" class="header-burger">
+                <button id="button-burger">
+            </div>
+            <div onclick="show_search()" class="header-search">
+                <button id="button-search">
+            </div>
         </div>
-    </a>
-</template>
-<!-- footer -->
+        <!-- HEADER-MENU -->
+        <div id="dropdown-menu" class="dropdown-menu display-none">
+            <div class="dropdown-element">Все</div>
+            <div class="dropdown-element">Развлечения</div>
+            <div class="dropdown-element">Политика</div>
+            <div class="dropdown-element">Экономика</div>
+            <div class="dropdown-element">Культура</div>
+            <div class="dropdown-element">Бизнес</div>
+            <div class="dropdown-element">Наука</div>
+            <div class="dropdown-element">Спорт</div>
+        </div>
+        <!-- HEADER-FILTER -->
+        <div id="dropdown-filter" class="dropdown display-none">
+            <div class="form-header">Фильтрация</div>
+            <form>
+                <label for="filter-author">Автор:</label>
+                <br>
+                <input id="filter-author" type="text" placeholder="Ivan Petrov">
+                <br>
+                <label for="filter-tags">Теги:</label>
+                <br>
+                <input id="filter-tags" type="text" placeholder="#политика #спорт">
+                <br>
+                <label for="filter-date-from">Дата:</label>
+                <div>
+                    <input id="filter-date-from" type="date">
+                    <input id="filter-date-to" type="date">
+                </div>
+                <br>
+                <button onclick="filter_function()" id="filter-button">Применить</button>
+                </form>
+        </div>
+        <!-- HEADER-SEARCH -->
+        <div id="dropdown-search" class="dropdown display-none">
+                <div class="form-header">Поиск</div>
+                <form>
+                    <input id="search-field" type="text" placeholder="Поиск">
+                    <br>
+                    <button onclick="search_function()" id="search-button">Искать</button>
+                </form>
+        </div>
+    </header>
+    <!-- MAIN-WALL -->
+    <main id="articles-wall">
+    </main>
 
-<footer id="footer">
-    <ul id="footer-bar">
 
-        <li class="footer-date">
-            25.02.2017
-        </li>
-        <li>
-            <a href="index.html"><img class="logotype-photo footer-photo" src="images/logo.png" alt="logotype"></a>
-        </li>
-        <li class="footer-name">
-            <div>Chirich Mikhail</div>
-            <div>chirichok@gmail.com</div>
-            <div>2-nd course 5-th group</div>
-        </li>
-    </ul>
-</footer>
+    <!-- FOOTER-->
+    <footer id="footer">
+        <ul id="footer-bar">
+            <li class="footer-date">
+                25.02.2017
+            </li>
+            <li>
+                <img class="footer-photo" src="images/logo-footer.png" alt="logotype">
+            </li>
+            <li class="footer-name">
+                <div>Chirich Mikhail</div>
+                <div>chirichok@gmail.com</div>
+                <div>2-nd course</div>
+                <div>5-th group</div>
+            </li>
+        </ul>
+    </footer>
+
+    <!-- TEMPLATE FOR ARTICLE -->
+    <template id="template-article">
+        <div class="content grow" id="id">
+            <p class="content-main-category">Развлечения</p>
+            <p class="content-title">Topic</p>
+            <div class="addition-text">
+                <div class="content-tags">#яблоко #апельсин #груша</div>
+                <div class="content-date">01.01.2016 05:48</div>
+                <div class="content-creator">Konstantin Trush</div>
+            </div>
+            <div class="addition-buttons display-none">
+                <button id="edit" class="edit-new">
+            </button>
+                <button id="remove" class="remove-new">
+            </button>
+            </div>
+        </div>
+    </template>
 
 </body>
-</html>
 
-<!--<div class="pagination">
-         <button class="button-more">Показать еще</button>
-    </div>-->
+</html>
