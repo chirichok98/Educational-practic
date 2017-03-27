@@ -1,0 +1,23 @@
+{
+  "name": "portal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chirichok98/Educational-practic.git"
+  },
+  "author": "chirichok98",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chirichok98/Educational-practic/issues"
+  },
+  "homepage": "https://github.com/chirichok98/Educational-practic#readme",
+  "dependencies": {
+    "express": "^4.15.2"
+  },
+  "private": true
+}

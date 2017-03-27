@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width: device-width, initial-scale=1">
+    <title>World '24/7'</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/media.css">
+    <link rel="shortcut icon" href="images/logo.png">
+</head>
+
+<body>
+    <!-- USER -->
+    <div class="user">
+        <button id="button-user"></button>
+        <div class="log-in">
+            <form id="loginForm">
+                <div>
+                    <input name="login" type="text" placeholder="Login">
+                    <input name="password" type="password" placeholder="Password">
+                </div>
+                <button type="button" id="login-button">Войти</button>
+            </form>
+        </div>
+        <div class="log-out display-none">
+            <form id="userForm">
+                <div>
+                    <div class="name">Hi, <span class="user-name">Mikhail Chirich</span></div>
+                    <button type="button" id="add-form-button">Добавить новость</button>
+                </div>
+                <button type="button" id="logout-button">Выйти</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header>
+        <div class="logotype">
+            <img class="logotype-photo" src="images/logo.png" alt="logotype">
+        </div>
+        <!-- HEADER-ALL-BUTTONS -->
+        <div class="header-container">
+            <div class="header-filter">
+                <button id="button-filter">
+            </div>
+            <div class="header-burger">
+                <button id="button-burger">
+            </div>
+            <div class="header-search">
+                <button id="button-search">
+            </div>
+        </div>
+        <!-- HEADER-MENU -->
+        <div id="dropdown-menu" class="dropdown-menu display-none">
+            <div class="dropdown-element">Все</div>
+            <div class="dropdown-element">Развлечения</div>
+            <div class="dropdown-element">Политика</div>
+            <div class="dropdown-element">Экономика</div>
+            <div class="dropdown-element">Культура</div>
+            <div class="dropdown-element">Бизнес</div>
+            <div class="dropdown-element">Наука</div>
+            <div class="dropdown-element">Спорт</div>
+        </div>
+        <!-- HEADER-FILTER -->
+        <div id="dropdown-filter" class="dropdown display-none">
+            <div class="form-header">Фильтрация</div>
+            <form>
+                <label for="filter-author">Автор:</label>
+                <br>
+                <input id="filter-author" type="text" placeholder="Ivan Petrov">
+                <br>
+                <label for="filter-tags">Теги:</label>
+                <br>
+                <input id="filter-tags" type="text" placeholder="#политика #спорт">
+                <br>
+                <label for="filter-date-from">Дата:</label>
+                <div>
+                    <input id="filter-date-from" type="date">
+                    <input id="filter-date-to" type="date">
+                </div>
+                <br>
+                <button type="button" id="filter-button">Применить</button>
+                </form>
+            </div>
+            <!-- HEADER-SEARCH -->
+            <div id="dropdown-search" class="dropdown display-none">
+                <div class="form-header">Поиск</div>
+                <form>
+                    <input id="search-field" type="text" placeholder="Поиск">
+                    <br>
+                    <button type="button" id="search-button">Искать</button>
+                </form>
+            </div>
+    </header>
+
+    <!-- MAIN-WALL -->
+    <main id="articles-wall">
+        <div id="articles-list" class="">
+        </div>
+        <div class="pagination">
+            <button id="pagination-show-more">Показать ещё</button>
+        </div>
+    </main>
+
+    <!-- ERROR -->
+    <div id="error-form" class="display-none">
+        <div id="error-name">Новости не найдены!</div>
+        <img src="images/warning.png" class="error-photo">
+    </div>
+
+    <!-- ADD-EDIT ARTICLES -->
+    <div id="add-article" class="add-article display-none">
+        <form id="addForm">
+            <div id="form-type">Добавление новости</div>
+            <label id="article-id" class="display-none"></label>
+            <label for="main-category">Категория</label>
+            <select id="main-category" name="category">
+                <option value="Развлечения">Развлечения</option>
+                <option value="Политика">Политика</option>
+                <option value="Экономика">Экономика</option>
+                <option value="Культура">Культура</option>
+                <option value="Бизнес">Бизнес</option>
+                <option value="Наука">Наука</option>
+                <option value="Спорт">Спорт</option>
+            </select>
+            <br>
+            <label for="title">Заголовок:</label>
+            <input required type="text" id="title" required maxlength=100 name="article-title" placeholder="Введите Ваш заголовок">
+            <br>
+            <label for="summary">Краткое описание:</label>
+            <input required type="text" id="summary" required maxlength=200 name="article-summary" placeholder="Введите краткое описание">
+            <br>
+            <label for="content">Содержание:</label>
+            <textarea required type="text" id="content" required maxlength=8888 name="article-content" placeholder="Введите содержание новости"></textarea>
+            <br>
+            <label for="tag">Теги:</label>
+            <input type="text" class="tag" required maxlength=20 name="article-tag" placeholder="Тег">
+            <input type="text" class="tag" required maxlength=20 name="article-tag" placeholder="Тег">
+            <input type="text" class="tag" required maxlength=20 name="article-tag" placeholder="Тег">
+            <input type="text" class="tag" required maxlength=20 name="article-tag" placeholder="Тег">
+            <input type="text" class="tag" required maxlength=20 name="article-tag" placeholder="Тег">
+
+            <label for="photo">Ссылка на фотографию:</label>
+            <input type="url" id="photo" name="article-photo" placeholder="Url">
+            <img src="" id="example-photo" class="display-none">
+
+            <button type="button" class="" id="add-article-button">Опубликовать новость</button>
+            <button type="button" class="display-none" id="edit-article-button">Зафиксировать изменения</button>
+            <button type="button" id="go-back-button">На главную</button>
+        </form>
+    </div>
+
+    <!-- SEE FULL ARTICLE -->
+    <div id="article-details" class="detail-article display-none">
+        <form id="detailsForm">
+            <label id="detail-article-id" class="display-none"></label>
+            <div class="header-article-detail">
+                <p id="detail-main-category"></p>
+                <p id="detail-title"></p>
+                <p id="detail-date"></p>
+            </div>
+            <div class="main-info-detail">
+                <img src="" id="detail-photo">
+                <p id="detail-content"></p>
+                <p id="detail-tags"></p>
+                <p>Автор: <span id="detail-author"></span></p>
+            </div>
+            <div id="detail-additional-buttons" class="display-none">
+                <button type="button" id="detail-remove-article-button">Удалить новость</button>
+                <button type="button" id="detail-edit-article-button">Редактировать изменения</button>
+            </div>
+
+        </form>
+        <button type="button" id="go-back-button">На главную</button>
+    </div>
+
+    <div id="background" class="display-none">
+        <form>
+            <p id="article-id" class="display-none"></p>
+            <p>Вы уверены, что хотите удалить эту новость?</p>
+            <button type="button" class="" id="agree-delete-button">Удалить</button>
+            <button type="button" class="" id="cancel-delete-button">Отмена</button>
+        </form>
+    </div>
+
+
+    <!-- FOOTER-->
+    <footer id="footer">
+        <ul id="footer-bar">
+            <li class="footer-date">
+                25.02.2017
+            </li>
+            <li>
+                <img class="footer-photo" src="images/logo-footer.png" alt="logotype">
+            </li>
+            <li class="footer-name">
+                <div>Chirich Mikhail</div>
+                <div>chirichok@gmail.com</div>
+                <div>2-nd course</div>
+                <div>5-th group</div>
+            </li>
+        </ul>
+    </footer>
+
+    <!-- TEMPLATE FOR ARTICLE -->
+    <template id="template-article">
+        <article class="content grow" id="id">
+            <div class="addition-buttons display-none">
+                <button id="edit-button" class="edit-new">
+                </button>
+                <button id="remove-button" class="remove-new">
+                </button>
+            </div>
+            <p class="content-main-category"></p>
+            <p class="content-title"></p>
+            <div class="addition-text">
+                <div class="content-tags"></div>
+                <div class="content-date"></div>
+                <div class="content-creator"></div>
+            </div>
+        </article>
+    </template>
+
+    <script src="scripts/article-model.js"></script>
+    <script src="scripts/article-dom.js"></script>
+    <script src="scripts/actions.js"></script>
+    <script src="scripts/pagination.js"></script>
+    <script src="scripts/script.js"></script>
+</body>
+
+</html>
