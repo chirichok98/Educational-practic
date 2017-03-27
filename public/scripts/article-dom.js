@@ -11,11 +11,13 @@ var articleDOM = (function () {
     function displayAdditionalButtons(user) {
         var articles = document.getElementsByClassName('addition-buttons');
         if (user) {
+            document.getElementById('detail-additional-buttons').classList.remove('display-none');
             [].forEach.call(articles, function (item) {
                 item.classList.remove('display-none');
             });
         }
         else {
+            document.getElementById('detail-additional-buttons').classList.add('display-none');
             [].forEach.call(articles, function (item) {
                 item.classList.add('display-none');
             });

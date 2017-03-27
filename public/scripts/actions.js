@@ -1,57 +1,106 @@
 "use strict";
 var actions = (function () {
-    var ARRAY_TO_SHOW = articleModel.getArticles(0, articleModel.getArticlesAmount());
+    var ARRAY_TO_SHOW;
 
     var ERROR_TEXT;
-    var LOGIN_FORM = document.getElementById("loginForm");
+    var LOGIN_FORM;
     /* add - edit form elements */
-    var MAIN_CATEGORY = document.getElementById("main-category");
-    var PHOTO = document.getElementById("photo");
-    var TITLE = document.getElementById("title");
-    var SUMMARY = document.getElementById("summary");
-    var CONTENT = document.getElementById("content");
-    var TAGS = document.querySelectorAll('.tag');
-    var EXAMPLE_PHOTO = document.getElementById('example-photo');
-    var ARTICLE_ID = document.getElementById('article-id');
-    var FORM_TYPE = document.getElementById('form-type');
+    var MAIN_CATEGORY;
+    var PHOTO;
+    var TITLE;
+    var SUMMARY;
+    var CONTENT;
+    var TAGS;
+    var EXAMPLE_PHOTO;
+    var ARTICLE_ID;
+    var FORM_TYPE;
 
     /* buttons */
-    var ADD_ARTICLE_BUTTON = document.getElementById('add-article-button');
-    var EDIT_ARTICLE_BUTTON = document.getElementById('edit-article-button');
-    var CANCEL_DELETE_BUTTON = document.getElementById('cancel-delete-button');
-    var AGREE_DELETE_BUTTON = document.getElementById('agree-delete-button');
+    var ADD_ARTICLE_BUTTON;
+    var EDIT_ARTICLE_BUTTON;
+    var CANCEL_DELETE_BUTTON;
+    var AGREE_DELETE_BUTTON;
 
     /* dropdowns */
-    var SEARCH_FIELD = document.getElementById('dropdown-search');
-    var FILTER_FIELD = document.getElementById('dropdown-filter');
-    var BURGER_FIELD = document.getElementById('dropdown-menu');
-    var FILTER_BUTTON = document.getElementById('button-filter');
-    var SEARCH_BUTTON = document.getElementById('button-search');
-    var BURGER_BUTTON = document.getElementById('button-burger');
-    var BACKGROUND = document.getElementById('background');
+    var SEARCH_FIELD;
+    var FILTER_FIELD;
+    var BURGER_FIELD;
+    var FILTER_BUTTON;
+    var SEARCH_BUTTON;
+    var BURGER_BUTTON;
+    var BACKGROUND;
 
-    var ARTICLES_LIST = document.getElementById('articles-list');
-    var ARTICLES_WALL = document.getElementById('articles-wall');
-    var ADD_ARTICLE = document.getElementById('add-article');
-    var ARTICLE_DETAILS = document.getElementById('article-details');
-    var ERROR = document.getElementById('error-form');
+    var ARTICLES_LIST;
+    var ARTICLES_WALL;
+    var ADD_ARTICLE;
+    var ARTICLE_DETAILS;
+    var ERROR;
 
     /* detail */
-    var DETAIL_ARTICLE_ID = document.getElementById('detail-article-id');
-    var DETAIL_MAIN_CATEGORY = document.getElementById('detail-main-category');
-    var DETAIL_TITLE = document.getElementById('detail-title');
-    var DETAIL_DATE = document.getElementById('detail-date');
-    var DETAIL_PHOTO = document.getElementById('detail-photo');
-    var DETAIL_CONTENT = document.getElementById('detail-content');
-    var DETAIL_TAGS = document.getElementById('detail-tags');
-    var DETAIL_AUTHOR = document.getElementById('detail-author');
-    var DETAIL_ADDITIONAL_BUTTON = document.getElementById('detail-additional-buttons');
+    var DETAIL_ARTICLE_ID;
+    var DETAIL_MAIN_CATEGORY;
+    var DETAIL_TITLE;
+    var DETAIL_DATE;
+    var DETAIL_PHOTO;
+    var DETAIL_CONTENT;
+    var DETAIL_TAGS;
+    var DETAIL_AUTHOR;
+    var DETAIL_ADDITIONAL_BUTTON;
 
     /* filter */
-    var FILTER_TAGS = document.getElementById('filter-tags');
-    var FILTER_DATE_FROM = document.getElementById('filter-date-from');
-    var FILTER_DATE_TO = document.getElementById('filter-date-to');
-    var FILTER_AUTHOR = document.getElementById('filter-author');
+    var FILTER_TAGS;
+    var FILTER_DATE_FROM;
+    var FILTER_DATE_TO;
+    var FILTER_AUTHOR;
+
+    function init() {
+        LOGIN_FORM = document.getElementById("loginForm");
+        MAIN_CATEGORY = document.getElementById("main-category");
+        PHOTO = document.getElementById("photo");
+        TITLE = document.getElementById("title");
+        SUMMARY = document.getElementById("summary");
+        CONTENT = document.getElementById("content");
+        TAGS = document.querySelectorAll('.tag');
+        EXAMPLE_PHOTO = document.getElementById('example-photo');
+        ARTICLE_ID = document.getElementById('article-id');
+        FORM_TYPE = document.getElementById('form-type');
+
+        ADD_ARTICLE_BUTTON = document.getElementById('add-article-button');
+        EDIT_ARTICLE_BUTTON = document.getElementById('edit-article-button');
+        CANCEL_DELETE_BUTTON = document.getElementById('cancel-delete-button');
+        AGREE_DELETE_BUTTON = document.getElementById('agree-delete-button');
+
+        SEARCH_FIELD = document.getElementById('dropdown-search');
+        FILTER_FIELD = document.getElementById('dropdown-filter');
+        BURGER_FIELD = document.getElementById('dropdown-menu');
+        FILTER_BUTTON = document.getElementById('button-filter');
+        SEARCH_BUTTON = document.getElementById('button-search');
+        BURGER_BUTTON = document.getElementById('button-burger');
+        BACKGROUND = document.getElementById('background');
+
+        ARTICLES_LIST = document.getElementById('articles-list');
+        ARTICLES_WALL = document.getElementById('articles-wall');
+        ADD_ARTICLE = document.getElementById('add-article');
+        ARTICLE_DETAILS = document.getElementById('article-details');
+        ERROR = document.getElementById('error-form');
+
+        DETAIL_ARTICLE_ID = document.getElementById('detail-article-id');
+        DETAIL_MAIN_CATEGORY = document.getElementById('detail-main-category');
+        DETAIL_TITLE = document.getElementById('detail-title');
+        DETAIL_DATE = document.getElementById('detail-date');
+        DETAIL_PHOTO = document.getElementById('detail-photo');
+        DETAIL_CONTENT = document.getElementById('detail-content');
+        DETAIL_TAGS = document.getElementById('detail-tags');
+        DETAIL_AUTHOR = document.getElementById('detail-author');
+        DETAIL_ADDITIONAL_BUTTON = document.getElementById('detail-additional-buttons');
+
+        FILTER_TAGS = document.getElementById('filter-tags');
+        FILTER_DATE_FROM = document.getElementById('filter-date-from');
+        FILTER_DATE_TO = document.getElementById('filter-date-to');
+        FILTER_AUTHOR = document.getElementById('filter-author');
+
+        ARRAY_TO_SHOW = articleModel.getArticles(0, articleModel.getArticlesAmount());
+    }
 
     function closeAllDropdowns() {
         SEARCH_FIELD.classList.toggle('display-none', true);
@@ -92,17 +141,19 @@ var actions = (function () {
     function loginFunction() {
         if (LOGIN_FORM.login.value !== '') {
             user = LOGIN_FORM.login.value;
+            localStorage.setItem('user', JSON.stringify(user));
             articleDOM.checkUser(user);
-            DETAIL_ADDITIONAL_BUTTON.classList.remove('display-none');
+            //DETAIL_ADDITIONAL_BUTTON.classList.remove('display-none');
         }
     }
 
     function logoutFunction() {
         user = null;
+        localStorage.setItem('user', JSON.stringify(user));
         LOGIN_FORM.login.value = "";
         LOGIN_FORM.password.value = "";
         articleDOM.checkUser(user);
-        DETAIL_ADDITIONAL_BUTTON.classList.add('display-none');
+        //DETAIL_ADDITIONAL_BUTTON.classList.add('display-none');
         showArticlesWallFunction();
     }
 
@@ -235,7 +286,7 @@ var actions = (function () {
             BACKGROUND.classList.add('display-none');
             printArticles();
         }
-        else {
+        else if (event.target.id !== 'error-form') {
             BACKGROUND.classList.add('display-none');
         }
     }
@@ -321,6 +372,8 @@ var actions = (function () {
     }
 
     return {
+        init: init,
+
         loginFunction: loginFunction,
         logoutFunction: logoutFunction,
         addArticle: addArticle,

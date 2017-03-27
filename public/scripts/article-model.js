@@ -1,7 +1,6 @@
 "use strict";
 var articleModel = (function () {
     var mainCategory = ["Развлечения", "Политика", "Экономика", "Культура", "Бизнес", "Наука", "Спорт"];
-    var TAGS = ['политика', 'экономика', 'спорт', 'общество', 'культура', 'здоровье'];
     var ARTICLES = [
         {
             id: '2017-02-27T14:27:00',
@@ -236,7 +235,7 @@ var articleModel = (function () {
         }
         else {
             return ARTICLES.filter(function (item) {
-                if (item.mainCategory === category) {
+                if (!item.deleted && item.mainCategory === category) {
                     return true;
                 }
             });
@@ -262,6 +261,7 @@ var articleModel = (function () {
         });
         if (index != -1) {
             ARTICLES[index].deleted = true;
+            fillLocalStorage();
             return true;
         }
         else {
@@ -272,6 +272,7 @@ var articleModel = (function () {
     function addArticle(article) {
         if (validateArticle(article)) {
             ARTICLES.unshift(article);
+            fillLocalStorage();
             return true;
         } else {
             return false;
@@ -304,6 +305,7 @@ var articleModel = (function () {
             if (article.tags) {
                 ARTICLES[index].tags = article.tags;
             }
+            fillLocalStorage();
             return true;
         }
         else {
@@ -315,6 +317,17 @@ var articleModel = (function () {
         return ARTICLES.length;
     }
 
+    function updateArticles() {
+        ARTICLES = JSON.parse(localStorage.getItem("articles"));
+        ARTICLES.forEach(function (item) {
+            item.createdAt = new Date(item.createdAt);
+        });
+    }
+
+    function fillLocalStorage() {
+        localStorage.setItem("articles", JSON.stringify(ARTICLES));
+    }
+
     return {
         getArticles: getArticles,
         validateArticles: validateArticle,
@@ -323,6 +336,8 @@ var articleModel = (function () {
         addArticle: addArticle,
         editArticle: editArticle,
         getArticlesAmount: getArticlesAmount,
-        getArticlesByCategory: getArticlesByCategory
+        getArticlesByCategory: getArticlesByCategory,
+        updateArticles: updateArticles,
+        fillLocalStorage: fillLocalStorage
     };
 }());

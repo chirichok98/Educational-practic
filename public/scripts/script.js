@@ -2,7 +2,15 @@ var user = null;
 
 (function () {
     articleDOM.init();
+    if (!localStorage.getItem("articles"))
+        articleModel.fillLocalStorage();
+    if (!localStorage.getItem("user"))
+        localStorage.setItem('user', JSON.stringify(user));
+    user = JSON.parse(localStorage.getItem('user'));
+    articleModel.updateArticles();
+    actions.init();
     printArticles();
+    articleDOM.checkUser(user);
 }());
 
 function loginFunction() {
@@ -40,7 +48,7 @@ function editArticle() {
 
 function removeArticle(id) {
     actions.showDeleteFormFunction(id);
-    
+
 }
 
 function showDetailArticleFunction(id) {
@@ -64,7 +72,7 @@ function showSearch() {
     actions.showSearch();
 }
 
-function displayByCategory(category){
+function displayByCategory(category) {
     actions.setCategory(category);
     printArticles();
 }
@@ -74,13 +82,11 @@ function showMenu() {
 }
 
 function setCategory(event) {
-    console.log(event);
     var element = event.target;
-    console.log(element);
-    if(element.className === 'dropdown-element'){
-        displayByCategory(element.textContent);        
+    if (element.className === 'dropdown-element') {
+        displayByCategory(element.textContent);
     }
-    else{return;}
+    else { return; }
 }
 
 function handleDropdown(event) {
@@ -112,7 +118,6 @@ function handleForArticle(event) {
     else if (event.target.tagName !== 'main') {
         var id = event.target.offsetParent.id;
         if (id) {
-            console.log(id);
             showDetailArticleFunction(id);
         }
     }
