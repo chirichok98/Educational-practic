@@ -98,7 +98,7 @@ var articleDOM = (function () {
 
     function renderArticle(article) {
         var template = ARTICLE_TEMPLATE;
-        template.content.querySelector('.content').setAttribute('id', article.id);
+        template.content.querySelector('.content').setAttribute('id', article._id);
         template.content.querySelector('.content').style.background = "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('" + article.photo + "') no-repeat";
         template.content.querySelector('.content-main-category').textContent = article.mainCategory;
         template.content.querySelector('.content-title').textContent = article.title;

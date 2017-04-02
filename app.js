@@ -1,36 +1,24 @@
-var http = require('http');
-var fs = require('fs');
-var path = require('path');
+var express = require('express');
+var bodyParser = require('body-parser');
+var controller = require('./controllers/articles');
 
-http.createServer(function (request, response) {
-    console.log('request ', request.url);
+var app = express();
 
-    var filePath = './public' + request.url;
-    if (filePath === './public/')
-        filePath = './public/index.html';
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-    var extname = String(path.extname(filePath)).toLowerCase();
-    var contentType = 'text/html';
-    var mimeTypes = {
-        '.html': 'text/html',
-        '.js': 'text/javascript',
-        '.css': 'text/css',
-        '.png': 'image/png'
-    };
+app.get('/articles', controller.getArticles);
+app.get('/article/:id', controller.getArticleByID);
+app.get('/articles/:category', controller.getArticlesByCategory);
+app.post('/articles', controller.createArticle);
+app.put('/articles/:id', controller.updateArticle);
+app.delete('/articles/:id', controller.removeArticle);
 
-    contentType = mimeTypes[extname];
+app.use(express.static('public'));
+app.get('/', function (req, res) {
+  res.send('index.html');
+})
 
-    fs.readFile(filePath, function (error, content) {
-        if (error) {
-            response.writeHead(500);
-            response.end('Sorry, check with the site admin for error: ' + error.code + ' ..\n');
-            response.end();
-        }
-        else {
-            response.writeHead(200, { 'Content-Type': contentType });
-            response.end(content, 'utf-8');
-        }
-    });
-
-}).listen(3000);
-console.log('Server running at http://127.0.0.1:3000/');
+app.listen(3000, function () {
+  console.log('Example app listening on port 3000!')
+});

@@ -2,12 +2,6 @@ var user = null;
 
 (function () {
     articleDOM.init();
-    if (!localStorage.getItem("articles"))
-        articleModel.fillLocalStorage();
-    if (!localStorage.getItem("user"))
-        localStorage.setItem('user', JSON.stringify(user));
-    user = JSON.parse(localStorage.getItem('user'));
-    articleModel.updateArticles();
     actions.init();
     printArticles();
     articleDOM.checkUser(user);

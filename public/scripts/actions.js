@@ -99,7 +99,23 @@ var actions = (function () {
         FILTER_DATE_TO = document.getElementById('filter-date-to');
         FILTER_AUTHOR = document.getElementById('filter-author');
 
-        ARRAY_TO_SHOW = articleModel.getArticles(0, articleModel.getArticlesAmount());
+        fillArrayFirstTime();
+    }
+
+    function fillArrayFirstTime() {
+        var oReq = new XMLHttpRequest();
+        oReq.addEventListener('load', handler);
+        function handler() {
+            ARRAY_TO_SHOW = JSON.parse(this.responseText);
+            ARRAY_TO_SHOW.forEach(item => item.createdAt = new Date(item.createdAt));
+            oReq.removeEventListener('load', handler);
+        }
+        oReq.open('GET', '/articles', false);
+        oReq.send();
+    }
+
+    function sort(array) {
+        return array.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
     }
 
     function closeAllDropdowns() {
@@ -141,7 +157,6 @@ var actions = (function () {
     function loginFunction() {
         if (LOGIN_FORM.login.value !== '') {
             user = LOGIN_FORM.login.value;
-            localStorage.setItem('user', JSON.stringify(user));
             articleDOM.checkUser(user);
             //DETAIL_ADDITIONAL_BUTTON.classList.remove('display-none');
         }
@@ -149,12 +164,13 @@ var actions = (function () {
 
     function logoutFunction() {
         user = null;
-        localStorage.setItem('user', JSON.stringify(user));
         LOGIN_FORM.login.value = "";
         LOGIN_FORM.password.value = "";
         articleDOM.checkUser(user);
         //DETAIL_ADDITIONAL_BUTTON.classList.add('display-none');
-        showArticlesWallFunction();
+        if (!ADD_ARTICLE.classList.contains('display-none')) {
+            showArticlesWallFunction();
+        }
     }
 
     function clearFields() {
@@ -169,67 +185,75 @@ var actions = (function () {
         EXAMPLE_PHOTO.classList.toggle('display-none', true);
     }
 
+    function serialize(obj) {
+        var query = [];
+        for (let prop in obj)
+            if (obj.hasOwnProperty(prop)) {
+                query.push(encodeURIComponent(prop) + "=" + encodeURIComponent(obj[prop]));
+            }
+        return query.join("&");
+    }
+
     function filterArticles() {
         closeAllDropdowns();
         ERROR_TEXT = 'Нет статей, удовлетворяющих введенным параметрам!';
-        var tags = FILTER_TAGS.value.replace(/#/g, '').trim().split(' ');
-        if (tags[0] === '') {
-            tags = undefined;
-        }
-
-        var dateFrom = new Date(FILTER_DATE_FROM.value);
-        if (dateFrom.toString() === 'Invalid Date') {
-            dateFrom = undefined;
-        }
-
-        var dateTo = new Date(FILTER_DATE_TO.value);
-        if (dateTo.toString() === 'Invalid Date') {
-            dateTo = undefined;
-        }
 
         var filterConfig = {
             author: FILTER_AUTHOR.value,
-            tags: tags,
-            date: {
-                from: dateFrom,
-                to: dateTo
-            }
+            from: new Date(FILTER_DATE_FROM.value),
+            to: new Date(FILTER_DATE_TO.value)
         };
-        ARRAY_TO_SHOW = articleModel.getArticles(0, articleModel.getArticlesAmount(), filterConfig);
-        if (ARRAY_TO_SHOW.length === 0) {
-            document.getElementById('error-name').textContent = ERROR_TEXT;
-            hideAllForms();
-            ERROR.classList.remove('display-none');
+        var tags = FILTER_TAGS.value.replace(/#/g, '').trim().split(' ');
+        if (tags[0] !== '') {
+            filterConfig.tags = tags;
         }
-        else { printArticles(); }
+        var query = serialize(filterConfig);
+
+        var oReq = new XMLHttpRequest();
+        oReq.addEventListener('load', handler);
+        function handler() {
+            ARRAY_TO_SHOW = JSON.parse(this.responseText);
+            ARRAY_TO_SHOW.forEach(item => item.createdAt = new Date(item.createdAt));
+            if (ARRAY_TO_SHOW.length !== 0) {
+                printArticles();
+            } else {
+                document.getElementById('error-name').textContent = ERROR_TEXT;
+                hideAllForms();
+                ERROR.classList.remove('display-none');
+            }
+            oReq.removeEventListener('load', handler);
+        }
+        oReq.open('GET', '/articles?' + query, false);
+        oReq.send();
     }
 
     function addArticle() {
-        var date = new Date();
         var article = {
-            id: date + user,
             mainCategory: MAIN_CATEGORY.value,
             photo: PHOTO.value,
             title: TITLE.value,
             summary: SUMMARY.value,
-            createdAt: date,
             author: user,
             content: CONTENT.value,
-            tags: [].slice.call(TAGS).map(function (element) { return element.value }),
-            deleted: false
-        }
-        if (articleModel.addArticle(article)) {
-            articleDOM.addArticle(article);
-            clearFields();
-            hideAllForms();
-            ARRAY_TO_SHOW = articleModel.getArticles();
-            printArticles();
-            showArticlesWallFunction();
-        }
-        else {
-            /* Fill with form of error  */
-            return false;
-        }
+            tags: [].slice.call(TAGS).map(function (element) { return element.value })
+        };
+
+        var oReq = new XMLHttpRequest();
+        oReq.addEventListener('load', function () {
+            var res = JSON.parse(this.responseText);
+            if (res) {
+                article._id = res.id;
+                article.createdAt = new Date(res.createdAt);
+                ARRAY_TO_SHOW.push(article);
+                printArticles();
+                showArticlesWallFunction();
+            } else {
+                ////////erororororoorororor
+            }
+        });
+        oReq.open('POST', '/articles');
+        oReq.setRequestHeader('content-type', 'application/json');
+        oReq.send(JSON.stringify(article));
     }
 
     function editArticle() {
@@ -242,28 +266,40 @@ var actions = (function () {
             content: CONTENT.value,
             tags: [].slice.call(TAGS).map(function (element) { return element.value })
         }
-        if (articleModel.editArticle(id, article)) {
-            articleDOM.editArticle(id, article);
-            clearFields();
-            hideAllForms();
-            ARRAY_TO_SHOW = articleModel.getArticles();
-            showArticlesWallFunction();
-        }
-        else {
-            /* Fill with form of error  */
-            return false;
-        }
+        var oReq = new XMLHttpRequest();
+        oReq.addEventListener('load', function () {
+            if (this.status === 200) {
+                var old = ARRAY_TO_SHOW.find(item => item._id === id);
+                for (var key in article) {
+                    if (old.hasOwnProperty(key)) {
+                        old[key] = article[key];
+                    }
+                }
+                articleDOM.editArticle(id, old);
+                printArticles();
+                showArticlesWallFunction();
+            } else {
+                ////////erororororoorororor
+            }
+        });
+        oReq.open('PUT', '/articles/' + id);
+        oReq.setRequestHeader('content-type', 'application/json');
+        oReq.send(JSON.stringify(article));
     }
 
     function removeArticle(id) {
-        if (articleModel.removeArticle(id)) {
-            articleDOM.removeArticle(id);
-            ARRAY_TO_SHOW = articleModel.getArticles();
-            showArticlesWallFunction();
-        } else {
-            /* Fill with form of error  */
-            return false;
+        var oReq = new XMLHttpRequest();
+        oReq.addEventListener('load', handler);
+        function handler() {
+            if (this.status === 200) {
+                articleDOM.removeArticle(id);
+                ARRAY_TO_SHOW.splice(ARRAY_TO_SHOW.findIndex(item => item._id === id), 1);
+                oReq.removeEventListener('load', handler);
+            }
         }
+        oReq.open('DELETE', '/articles/' + id, false);
+        oReq.send();
+
     }
 
     function hideAllForms() {
@@ -284,6 +320,7 @@ var actions = (function () {
             var id = document.getElementById('article-id').textContent;
             removeArticle(id);
             BACKGROUND.classList.add('display-none');
+            showArticlesWallFunction();
             printArticles();
         }
         else if (event.target.id !== 'error-form') {
@@ -305,7 +342,17 @@ var actions = (function () {
         window.scrollTo(0, 0);
         hideAllForms();
         closeAllDropdowns();
-        var article = articleModel.getArticle(id);
+        var article;
+        var oReq = new XMLHttpRequest();
+        oReq.addEventListener('load', handler);
+        function handler() {
+            article = JSON.parse(this.responseText);
+            article.createdAt = new Date(article.createdAt);
+            oReq.removeEventListener('load', handler);
+        }
+        oReq.open('GET', '/article/' + id, false);
+        oReq.send();
+
         DETAIL_ARTICLE_ID.value = id;
         DETAIL_MAIN_CATEGORY.textContent = article.mainCategory;
         DETAIL_TITLE.textContent = article.title;
@@ -323,13 +370,24 @@ var actions = (function () {
         FORM_TYPE.textContent = "Редактирование новости";
         EDIT_ARTICLE_BUTTON.classList.toggle('display-none', false);
         ADD_ARTICLE_BUTTON.classList.toggle('display-none', true);
-        var article = articleModel.getArticle(id);
+
+        var article;
+        var oReq = new XMLHttpRequest();
+        oReq.addEventListener('load', handler);
+        function handler() {
+            article = JSON.parse(this.responseText);
+            article.createdAt = new Date(article.createdAt);
+            oReq.removeEventListener('load', handler);
+        }
+        oReq.open('GET', '/article/' + id, false);
+        oReq.send();
+
         MAIN_CATEGORY.value = article.mainCategory;
         PHOTO.value = article.photo;
         TITLE.value = article.title;
         SUMMARY.value = article.summary;
         CONTENT.value = article.content;
-        for (var i = 0; i < 5; i++) {
+        for (let i = 0; i < 5; i++) {
             if (article.tags[i]) {
                 TAGS[i].value = article.tags[i];
             }
@@ -354,11 +412,20 @@ var actions = (function () {
     function setCategory(category) {
         closeAllDropdowns();
         hideAllForms();
-        ARRAY_TO_SHOW = articleModel.getArticlesByCategory(category);
+        var oReq = new XMLHttpRequest();
+        oReq.addEventListener('load', handler);
+        function handler() {
+            ARRAY_TO_SHOW = JSON.parse(this.responseText);
+            ARRAY_TO_SHOW.forEach(item => item.createdAt = new Date(item.createdAt));
+            oReq.removeEventListener('load', handler);
+        }
+        oReq.open('GET', '/articles/' + category, false);
+        oReq.send();
         showArticlesWallFunction();
     }
 
     function printArticles() {
+
         closeAllDropdowns();
         showArticlesWallFunction();
         articleDOM.removeArticles();
@@ -368,7 +435,7 @@ var actions = (function () {
     }
 
     function print(skip, top) {
-        articleDOM.showArticles(ARRAY_TO_SHOW.slice(skip, skip + top));
+        articleDOM.showArticles(sort(ARRAY_TO_SHOW).slice(skip, skip + top));
     }
 
     return {
