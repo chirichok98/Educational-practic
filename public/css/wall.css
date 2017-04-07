@@ -1,0 +1,119 @@
+#articles-wall {
+    width: 94%;
+    
+    margin-top: 80px;    
+    margin-left:auto;
+}
+
+.grow { 
+    transition: all 0.3s ease-in-out; 
+}
+
+.grow:hover { 
+    transform: scale(1.04);
+    
+    box-shadow: 3.5px 3px 2.5px 0px rgba(0,0,0,0.5);   
+    
+    cursor: pointer; 
+}
+
+.content {
+    width: 30%;
+    height: 340px;
+
+    font-size: 14px;
+    text-align: center;
+    letter-spacing: 1.3px;
+        
+    margin: 6px;
+
+    color: #FAFAFA;    
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url() no-repeat;
+    background-size: 100% 100%;
+    box-shadow: 1.6px 1.6px 1px 0px rgba(0,0,0,0.5);
+
+    display: inline-table;
+}
+
+.content-title {
+    font-size: 18px;
+    letter-spacing: 1.5px;
+    
+    padding-top: 70px;
+}
+
+.content:hover .content-title {
+    text-decoration: underline;
+}
+
+.content:hover .addition-text,
+.content .addition-buttons {
+    display: block;
+}
+
+.addition-text {
+    padding-top: 70px;
+}
+
+.content .content-tags,
+.content .content-creator {
+    padding: 5px; 
+}
+
+.content .content-date {
+    font-size: 11px; 
+}
+
+.content .display-none{
+    display: none;
+}
+
+.edit-new{
+    float: left;
+
+    height: 20px;
+    width: 20px;
+
+    margin-left: 15px;
+    margin-top: 15px;
+
+    background-color: transparent;
+    background-image: url("../images/edit-main.png");
+    background-size: 100% 100%;
+
+    cursor: pointer;
+}
+
+.remove-new {
+    float: right;
+
+    height: 20px;
+    width: 20px;
+
+    margin-right: 15px;
+    margin-top: 15px;
+
+    background-color: transparent;
+    background-image: url("../images/remove-main.png");
+    background-size: 100% 100%;
+
+    cursor: pointer;
+}
+
+main .pagination {
+    text-align: center; 
+
+    margin-top: 70px;
+}
+
+main .pagination button {
+    width: 150px;
+
+    padding: 12px;
+
+    border: 3px solid #9E9E9E;
+}
+
+main .pagination button:hover {
+    border: 3px solid #212121;
+}

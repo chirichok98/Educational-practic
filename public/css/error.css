@@ -1,0 +1,23 @@
+#error-form { 
+    width: 90%;
+    height: 300px;
+
+    margin-top: 160px;
+    margin-left: 5%;
+
+    text-align: center;
+}
+
+#error-form div {
+    font-size: 18px;
+    font-family: "Playfair Display",Georgia;
+
+    margin: 20px;
+}
+
+#error-form img {
+    font-family: "Playfair Display",Georgia;
+
+    width: 100px;
+    height: auto;
+}

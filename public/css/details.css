@@ -1,0 +1,91 @@
+.detail-article {
+    width: 100%;
+
+    margin-top: 80px;
+
+    text-align: center;
+}
+
+.detail-article form {
+    width: 60%;
+
+    text-align: center;
+   
+    margin-left: 20%;
+    
+    color: #212121;
+    border: 1px solid #EEEEEE;
+    background-color: #FFF; 
+    box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.3);
+}
+
+.detail-article .header-article-detail {
+    width: 100%;
+ 
+    padding: 10px 0;
+ 
+    border-bottom: 1px solid #F5F5F5;
+}
+
+.detail-article p {
+    font-size: 17px;
+
+    color: #9E9E9E;
+}
+
+.detail-article #detail-title {
+    width: 70%;
+
+    font-family: "Playfair Display",Georgia;
+    font-size: 26px;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+
+    margin-left: 15%;
+    
+    color:#212121;
+}
+
+.detail-article #detail-date {
+    font-size: 12px;
+}
+
+.detail-article .main-info-detail {
+    padding: 20px 10px;
+}
+
+.detail-article #detail-photo {
+    max-width: 90%;
+}
+
+.detail-article #detail-content {
+    width: 90%;
+    
+    padding-left: 5%;
+    
+    font-size: 19px;
+    
+    text-align: justify;  
+
+    color: #212121;
+}
+
+.detail-article button {
+    margin: 8px;
+    padding: 8px;
+    
+    border: 3px solid #E0E0E0;
+}
+
+.detail-article button:hover, .detail-article #go-back-button:hover {
+    border: 3px solid #212121;
+}
+
+.detail-article #go-back-button {
+    width:200px;
+    
+    margin-top: 30px;
+    padding: 8px;
+    
+    border: 3px solid #E0E0E0;
+}

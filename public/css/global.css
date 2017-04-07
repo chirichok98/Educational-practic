@@ -1,0 +1,58 @@
+html {
+    height: 100%;
+    
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "PT Sans","Open Sans",Helvetica,Roboto,Arial,sans-serif;
+    font-size: 62.5%;
+    
+    position: relative;
+    min-height: 100%;
+
+    margin: 0;
+    padding-bottom: 270px;
+
+    background-color: #FAFAFA;
+}
+
+input, textarea, .tag, select {
+    box-sizing: border-box;
+    border: 3px solid #E0E0E0;
+
+    transition: 0.5s;
+
+    outline: none;
+}
+
+button {
+    box-sizing: border-box;
+    
+    background-color: #212121;
+    border: 3px solid #E0E0E0;
+    color: #FAFAFA;
+
+    outline: 0;
+    border: 0;
+
+    transition: 0.5s;
+
+    cursor: pointer;
+}
+
+.display-none {
+    display: none;
+}
+
+
+
+
+
+ 
+
+
+
+
+
+

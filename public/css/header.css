@@ -1,0 +1,103 @@
+header {
+    position: relative;
+    height: auto;
+
+    top: 60px;
+
+    background-color: #F5F5F5;
+    border-top: 1px solid #E0E0E0;
+    box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.3);
+}
+
+header .logotype {
+    width: 100%;
+    height: auto;
+
+    text-align: center;
+}
+
+.logotype .logotype-photo {
+    height: 9vw;
+    width: 30%;
+    min-height: 75px;
+    min-width: 250px;
+
+    padding: 20px;
+}
+
+.header-container {
+    clear: both;
+    
+    height: 60px;
+    
+    padding: 0;
+    margin: 0;
+
+    border-top: 1px solid #E0E0E0;
+    border-bottom: 1px solid #E0E0E0;
+}
+
+.header-filter {
+    position: absolute;
+    
+    left: 0;
+    
+    border-right: 1px solid #E0E0E0;
+    
+    cursor: pointer;
+    display: inline-block;
+}
+
+.header-filter button {
+    height: 20px;
+    width: 20px;
+    
+    padding: 0; 
+    margin: 20px;
+    
+    background: url("../images/filter.png");
+    background-size: 20px;
+}
+
+.header-search {
+    position: absolute;
+    
+    right: 0;
+    
+    border-left: 1px solid #E0E0E0;
+
+    display: inline-block;
+}
+
+.header-search button {
+    height: 20px;
+    width: 20px;
+    padding: 0; 
+    margin: 20px;
+    
+    background: url("../images/search.png");
+    background-size: 20px;
+}
+
+.header-burger {
+    position: absolute;
+    
+    margin-left: calc(50% - 30px);
+
+    border-left: 1px solid #E0E0E0;
+    border-right: 1px solid #E0E0E0;
+
+    cursor: pointer;
+    display: inline-block;
+}
+
+.header-burger button {
+    height: 20px;
+    width: 20px;
+    
+    padding: 0; 
+    margin: 20px;
+    
+    background: url("../images/menu.png") no-repeat;
+    background-size: 20px;
+}

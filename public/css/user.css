@@ -1,0 +1,95 @@
+.user {
+    z-index: 20;
+    
+    position: fixed;
+    height: 60px;
+    width: 100%;
+
+    background-color: #FAFAFA;
+    border-bottom: 1px solid #E0E0E0;
+}
+
+.user #button-user {
+    position: fixed;
+    height: 20px;
+    width: 20px;
+
+    left: 0;    
+    padding: 0; 
+    margin: 20px;
+    
+    cursor: pointer;
+    
+    background: url("../images/user.png") no-repeat;
+    background-size: 20px;
+}
+
+.user form{
+    height: 60px;
+    
+    margin-left: 60px;
+
+    text-align: center;
+}
+
+.user form div {
+    display: inline-table;
+}
+
+.user form div .name {
+    font-size: 16px;
+
+    margin-top: 20px;
+    margin-right: 10px;
+
+    color: #212121;
+}
+
+.user form div .user-name {
+    font-style: italic;
+}
+
+.user form div button{
+    height: 40px;
+
+    padding: 8px 10px;
+    margin: 10px 5px 10px 5px;
+    
+    color: #212121;
+    background-color: #EEEEEE;
+    border: 3px solid #E0E0E0;
+}
+
+.user form button {
+    float: right;
+    height: 40px;
+    width: auto;
+
+    padding: 8px 10px;
+    margin: 10px;
+
+    border: 3px solid #E0E0E0;
+
+    display: inline-table;
+}
+
+.user form button:hover {
+    border: 3px solid #212121;
+}
+
+.user form button:disabled {
+    border: 3px solid #E0E0E0;
+}
+
+.user form input {
+    width: 150px;
+
+    font-size: 14px;
+
+    padding: 8px 3px 8px 6px;
+    margin: 13px 1px;
+}
+
+.user form input:focus {
+    border: 3px solid #212121;
+} 
