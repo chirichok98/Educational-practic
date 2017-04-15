@@ -18,8 +18,6 @@
     padding: 0; 
     margin: 20px;
     
-    cursor: pointer;
-    
     background: url("../images/user.png") no-repeat;
     background-size: 20px;
 }

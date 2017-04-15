@@ -1,109 +1,62 @@
-'use strict';
-var actions = (function () {
-  var ARRAY_TO_SHOW;
+const actions = (function () {
+  let ARRAY_TO_SHOW;
+  let ERROR_TEXT;
+  const LOGIN_FORM = byId('loginForm');
+  const MAIN_CATEGORY = byId('main-category');
+  const PHOTO = byId('photo');
+  const TITLE = byId('title');
+  const SUMMARY = byId('summary');
+  const CONTENT = byId('content');
+  const TAGS = document.querySelectorAll('.tag');
+  const EXAMPLE_PHOTO = byId('example-photo');
+  const ARTICLE_ID = byId('article-id');
+  const FORM_TYPE = byId('form-type');
 
-  var ERROR_TEXT;
-  var LOGIN_FORM;
-    /* add - edit form elements */
-  var MAIN_CATEGORY;
-  var PHOTO;
-  var TITLE;
-  var SUMMARY;
-  var CONTENT;
-  var TAGS;
-  var EXAMPLE_PHOTO;
-  var ARTICLE_ID;
-  var FORM_TYPE;
+  const ADD_ARTICLE_BUTTON = byId('add-article-button');
+  const EDIT_ARTICLE_BUTTON = byId('edit-article-button');
 
-    /* buttons */
-  var ADD_ARTICLE_BUTTON;
-  var EDIT_ARTICLE_BUTTON;
+  const SEARCH_FIELD = byId('dropdown-search');
+  const FILTER_FIELD = byId('dropdown-filter');
+  const BURGER_FIELD = byId('dropdown-menu');
+  const FILTER_BUTTON = byId('button-filter');
+  const SEARCH_BUTTON = byId('button-search');
+  const BURGER_BUTTON = byId('button-burger');
+  const BACKGROUND = byId('background');
 
-    /* dropdowns */
-  var SEARCH_FIELD;
-  var FILTER_FIELD;
-  var BURGER_FIELD;
-  var FILTER_BUTTON;
-  var SEARCH_BUTTON;
-  var BURGER_BUTTON;
-  var BACKGROUND;
+  const ARTICLES_WALL = byId('articles-wall');
+  const ADD_ARTICLE = byId('add-article');
+  const ARTICLE_DETAILS = byId('article-details');
+  const ERROR = byId('error-form');
 
-  var ARTICLES_WALL;
-  var ADD_ARTICLE;
-  var ARTICLE_DETAILS;
-  var ERROR;
+  const DETAIL_ARTICLE_ID = byId('detail-article-id');
+  const DETAIL_MAIN_CATEGORY = byId('detail-main-category');
+  const DETAIL_TITLE = byId('detail-title');
+  const DETAIL_DATE = byId('detail-date');
+  const DETAIL_PHOTO = byId('detail-photo');
+  const DETAIL_CONTENT = byId('detail-content');
+  const DETAIL_TAGS = byId('detail-tags');
+  const DETAIL_AUTHOR = byId('detail-author');
 
-    /* detail */
-  var DETAIL_ARTICLE_ID;
-  var DETAIL_MAIN_CATEGORY;
-  var DETAIL_TITLE;
-  var DETAIL_DATE;
-  var DETAIL_PHOTO;
-  var DETAIL_CONTENT;
-  var DETAIL_TAGS;
-  var DETAIL_AUTHOR;
-
-    /* filter */
-  var FILTER_TAGS;
-  var FILTER_DATE_FROM;
-  var FILTER_DATE_TO;
-  var FILTER_AUTHOR;
+  const FILTER_TAGS = byId('filter-tags');
+  const FILTER_DATE_FROM = byId('filter-date-from');
+  const FILTER_DATE_TO = byId('filter-date-to');
+  const FILTER_AUTHOR = byId('filter-author');
 
   function init() {
-    LOGIN_FORM = document.getElementById('loginForm');
-    MAIN_CATEGORY = document.getElementById('main-category');
-    PHOTO = document.getElementById('photo');
-    TITLE = document.getElementById('title');
-    SUMMARY = document.getElementById('summary');
-    CONTENT = document.getElementById('content');
-    TAGS = document.querySelectorAll('.tag');
-    EXAMPLE_PHOTO = document.getElementById('example-photo');
-    ARTICLE_ID = document.getElementById('article-id');
-    FORM_TYPE = document.getElementById('form-type');
-
-    ADD_ARTICLE_BUTTON = document.getElementById('add-article-button');
-    EDIT_ARTICLE_BUTTON = document.getElementById('edit-article-button');
-
-    SEARCH_FIELD = document.getElementById('dropdown-search');
-    FILTER_FIELD = document.getElementById('dropdown-filter');
-    BURGER_FIELD = document.getElementById('dropdown-menu');
-    FILTER_BUTTON = document.getElementById('button-filter');
-    SEARCH_BUTTON = document.getElementById('button-search');
-    BURGER_BUTTON = document.getElementById('button-burger');
-    BACKGROUND = document.getElementById('background');
-
-    ARTICLES_WALL = document.getElementById('articles-wall');
-    ADD_ARTICLE = document.getElementById('add-article');
-    ARTICLE_DETAILS = document.getElementById('article-details');
-    ERROR = document.getElementById('error-form');
-
-    DETAIL_ARTICLE_ID = document.getElementById('detail-article-id');
-    DETAIL_MAIN_CATEGORY = document.getElementById('detail-main-category');
-    DETAIL_TITLE = document.getElementById('detail-title');
-    DETAIL_DATE = document.getElementById('detail-date');
-    DETAIL_PHOTO = document.getElementById('detail-photo');
-    DETAIL_CONTENT = document.getElementById('detail-content');
-    DETAIL_TAGS = document.getElementById('detail-tags');
-    DETAIL_AUTHOR = document.getElementById('detail-author');
-
-    FILTER_TAGS = document.getElementById('filter-tags');
-    FILTER_DATE_FROM = document.getElementById('filter-date-from');
-    FILTER_DATE_TO = document.getElementById('filter-date-to');
-    FILTER_AUTHOR = document.getElementById('filter-author');
-
     fillArrayFirstTime();
   }
 
   function fillArrayFirstTime() {
-    var oReq = new XMLHttpRequest();
-    oReq.addEventListener('load', handler);
-    function handler() {
-      ARRAY_TO_SHOW = JSON.parse(this.responseText);
-      ARRAY_TO_SHOW.forEach(item => item.createdAt = new Date(item.createdAt));
-      oReq.removeEventListener('load', handler);
-    }
-    oReq.open('GET', '/articles', false);
-    oReq.send();
+    requests.sendGetHttp('/articles').then(
+      (response) => {
+        ARRAY_TO_SHOW = response;
+        ARRAY_TO_SHOW.forEach(item => item.createdAt = new Date(item.createdAt));
+        printArticles();
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   }
 
   function sort(array) {
@@ -138,7 +91,7 @@ var actions = (function () {
   }
 
   function showMenu() {
-    if (BURGER_BUTTON.style.backgroundImage == 'url("../images/close.png")') {
+    if (BURGER_BUTTON.style.backgroundImage === 'url("../images/close.png")') {
       closeAllDropdowns();
     } else {
       BURGER_FIELD.classList.remove('display-none');
@@ -158,7 +111,6 @@ var actions = (function () {
     LOGIN_FORM.login.value = '';
     LOGIN_FORM.password.value = '';
     articleDOM.checkUser(user);
-        //DETAIL_ADDITIONAL_BUTTON.classList.add('display-none');
     if (!ADD_ARTICLE.classList.contains('display-none')) {
       showArticlesWallFunction();
     }
@@ -170,127 +122,111 @@ var actions = (function () {
     SUMMARY.value = '';
     CONTENT.value = '';
     ARTICLE_ID.textContent = '';
-    TAGS.forEach(function (tag) {
+    TAGS.forEach((tag) => {
       tag.value = '';
     });
     EXAMPLE_PHOTO.classList.toggle('display-none', true);
   }
 
   function serialize(obj) {
-    var query = [];
-    for (let prop in obj)
-      if (obj.hasOwnProperty(prop)) {
-        query.push(encodeURIComponent(prop) + '=' + encodeURIComponent(obj[prop]));
-      }
-    return query.join('&');
+    return Object.keys(obj).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(obj[k])}`).join('&');
   }
-
+   
   function filterArticles() {
     closeAllDropdowns();
     ERROR_TEXT = 'Нет статей, удовлетворяющих введенным параметрам!';
 
-    var filterConfig = {
+    const filterConfig = {
       author: FILTER_AUTHOR.value,
       from: new Date(FILTER_DATE_FROM.value),
-      to: new Date(FILTER_DATE_TO.value)
+      to: new Date(FILTER_DATE_TO.value),
     };
-    var tags = FILTER_TAGS.value.replace(/#/g, '').trim().split(' ');
+    const tags = FILTER_TAGS.value.replace(/#/g, '').trim().split(' ');
     if (tags[0] !== '') {
       filterConfig.tags = tags;
     }
-    var query = serialize(filterConfig);
-
-    var oReq = new XMLHttpRequest();
-    oReq.addEventListener('load', handler);
-    function handler() {
-      ARRAY_TO_SHOW = JSON.parse(this.responseText);
-      ARRAY_TO_SHOW.forEach(item => item.createdAt = new Date(item.createdAt));
-      if (ARRAY_TO_SHOW.length !== 0) {
-        printArticles();
-      } else {
-        document.getElementById('error-name').textContent = ERROR_TEXT;
+    const query = serialize(filterConfig);
+    requests.sendGetHttp(`/articles?${query}`).then(
+      (response) => {
+        ARRAY_TO_SHOW = response;
+        ARRAY_TO_SHOW.forEach(item => item.createdAt = new Date(item.createdAt));
+        if (ARRAY_TO_SHOW.length !== 0) {
+          printArticles();
+          return;
+        }
+        byId('error-name').textContent = ERROR_TEXT;
         hideAllForms();
         ERROR.classList.remove('display-none');
+      },
+      (error) => {
+        console.log(error);
       }
-      oReq.removeEventListener('load', handler);
-    }
-    oReq.open('GET', '/articles?' + query, false);
-    oReq.send();
+    );
   }
 
   function addArticle() {
-    var article = {
+    const article = {
       mainCategory: MAIN_CATEGORY.value,
       photo: PHOTO.value,
       title: TITLE.value,
       summary: SUMMARY.value,
       author: user,
       content: CONTENT.value,
-      tags: [].slice.call(TAGS).map(function (element) { return element.value; })
+      tags: [].slice.call(TAGS).map(element => element.value),
     };
-
-    var oReq = new XMLHttpRequest();
-    oReq.addEventListener('load', function () {
-      var res = JSON.parse(this.responseText);
-      if (res) {
-        article._id = res.id;
-        article.createdAt = new Date(res.createdAt);
-        ARRAY_TO_SHOW.push(article);
-        printArticles();
-        showArticlesWallFunction();
-      } else {
-                ////////erororororoorororor
+    requests.sendPostHttp('/articles', article).then(
+      (response) => {
+        const res = response;
+        if (res) {
+          article._id = res.id;
+          article.createdAt = new Date(res.createdAt);
+          ARRAY_TO_SHOW.push(article);
+          printArticles();
+          showArticlesWallFunction();
+        }
+      },
+      (error) => {
+        console.log(error);
       }
-    });
-    oReq.open('POST', '/articles');
-    oReq.setRequestHeader('content-type', 'application/json');
-    oReq.send(JSON.stringify(article));
+    );
   }
 
   function editArticle() {
-    var id = ARTICLE_ID.textContent;
-    var article = {
+    const id = ARTICLE_ID.textContent;
+    const article = {
       mainCategory: MAIN_CATEGORY.value,
       photo: PHOTO.value,
       title: TITLE.value,
       summary: SUMMARY.value,
       content: CONTENT.value,
-      tags: [].slice.call(TAGS).map(function (element) { return element.value; })
+      tags: [].slice.call(TAGS).map(element => element.value),
     };
-    var oReq = new XMLHttpRequest();
-    oReq.addEventListener('load', function () {
-      if (this.status === 200) {
-        var old = ARRAY_TO_SHOW.find(item => item._id === id);
-        for (var key in article) {
-          if (old.hasOwnProperty(key)) {
-            old[key] = article[key];
-          }
-        }
+    requests.sendPutHttp(`/articles/${id}`, article).then(
+      (response) => {
+        const old = ARRAY_TO_SHOW.find(item => item._id === id);
+        const keys = Object.keys(article);
+        keys.forEach(key => old[key] = article[key]);
         articleDOM.editArticle(id, old);
-        printArticles();
         showArticlesWallFunction();
-      } else {
-                ////////erororororoorororor
+      },
+      (error) => {
+        console.log(error);
       }
-    });
-    oReq.open('PUT', '/articles/' + id);
-    oReq.setRequestHeader('content-type', 'application/json');
-    oReq.send(JSON.stringify(article));
+    );
   }
 
   function removeArticle(id) {
-    var oReq = new XMLHttpRequest();
-    oReq.addEventListener('load', handler);
-    function handler() {
-      if (this.status === 200) {
+    requests.sendDeleteHttp(`/articles/${id}`).then(
+      (response) => {
         articleDOM.removeArticle(id);
         ARRAY_TO_SHOW.splice(ARRAY_TO_SHOW.findIndex(item => item._id === id), 1);
-        oReq.removeEventListener('load', handler);
+        printArticles();
+        showArticlesWallFunction();
+      },
+      (error) => {
+        console.log(error);
       }
-    }
-    oReq.open('DELETE', '/articles/' + id, false);
-    oReq.send();
-
+    );
   }
 
   function hideAllForms() {
@@ -302,19 +238,18 @@ var actions = (function () {
 
   function showDeleteFormFunction(id) {
     BACKGROUND.classList.remove('display-none');
-    document.getElementById('article-id').textContent = id;
+    byId('article-id').textContent = id;
     BACKGROUND.addEventListener('click', checkAnswer);
   }
 
   function checkAnswer(event) {
     if (event.target.id === 'agree-delete-button') {
-      var id = document.getElementById('article-id').textContent;
+      const id = byId('article-id').textContent;
       removeArticle(id);
       BACKGROUND.classList.add('display-none');
       showArticlesWallFunction();
       printArticles();
-    }
-    else if (event.target.id !== 'error-form') {
+    } else if (event.target.id !== 'error-form') {
       BACKGROUND.classList.add('display-none');
     }
   }
@@ -333,26 +268,25 @@ var actions = (function () {
     window.scrollTo(0, 0);
     hideAllForms();
     closeAllDropdowns();
-    var article;
-    var oReq = new XMLHttpRequest();
-    oReq.addEventListener('load', handler);
-    function handler() {
-      article = JSON.parse(this.responseText);
-      article.createdAt = new Date(article.createdAt);
-      oReq.removeEventListener('load', handler);
-    }
-    oReq.open('GET', '/article/' + id, false);
-    oReq.send();
-
-    DETAIL_ARTICLE_ID.value = id;
-    DETAIL_MAIN_CATEGORY.textContent = article.mainCategory;
-    DETAIL_TITLE.textContent = article.title;
-    DETAIL_DATE.textContent = article.createdAt.toLocaleDateString() + ' ' + article.createdAt.toLocaleTimeString();
-    DETAIL_PHOTO.setAttribute('src', article.photo);
-    DETAIL_CONTENT.textContent = article.content;
-    DETAIL_TAGS.textContent = '#' + article.tags.join(' #');
-    DETAIL_AUTHOR.textContent = article.author;
-    ARTICLE_DETAILS.classList.remove('display-none');
+    let article;
+    requests.sendGetHttp(`/article/${id}`).then(
+      (response) => {
+        article = response;
+        article.createdAt = new Date(article.createdAt);
+        DETAIL_ARTICLE_ID.value = id;
+        DETAIL_MAIN_CATEGORY.textContent = article.mainCategory;
+        DETAIL_TITLE.textContent = article.title;
+        DETAIL_DATE.textContent = `${article.createdAt.toLocaleDateString()} ${article.createdAt.toLocaleTimeString()}`;
+        DETAIL_PHOTO.setAttribute('src', article.photo);
+        DETAIL_CONTENT.textContent = article.content;
+        DETAIL_TAGS.textContent = `#${article.tags.join(' #')}`;
+        DETAIL_AUTHOR.textContent = article.author;
+        ARTICLE_DETAILS.classList.remove('display-none');
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   }
 
   function showEditFormFunction(id) {
@@ -362,31 +296,31 @@ var actions = (function () {
     EDIT_ARTICLE_BUTTON.classList.toggle('display-none', false);
     ADD_ARTICLE_BUTTON.classList.toggle('display-none', true);
 
-    var article;
-    var oReq = new XMLHttpRequest();
-    oReq.addEventListener('load', handler);
-    function handler() {
-      article = JSON.parse(this.responseText);
-      article.createdAt = new Date(article.createdAt);
-      oReq.removeEventListener('load', handler);
-    }
-    oReq.open('GET', '/article/' + id, false);
-    oReq.send();
+    let article;
 
-    MAIN_CATEGORY.value = article.mainCategory;
-    PHOTO.value = article.photo;
-    TITLE.value = article.title;
-    SUMMARY.value = article.summary;
-    CONTENT.value = article.content;
-    for (let i = 0; i < 5; i++) {
-      if (article.tags[i]) {
-        TAGS[i].value = article.tags[i];
+    requests.sendGetHttp(`/article/${id}`).then(
+      (response) => {
+        article = response;
+        article.createdAt = new Date(article.createdAt);
+        MAIN_CATEGORY.value = article.mainCategory;
+        PHOTO.value = article.photo;
+        TITLE.value = article.title;
+        SUMMARY.value = article.summary;
+        CONTENT.value = article.content;
+        for (let i = 0; i < 5; i += 1) {
+          if (article.tags[i]) {
+            TAGS[i].value = article.tags[i];
+          }
+        }
+        showExamplePhoto();
+        hideAllForms();
+        closeAllDropdowns();
+        ADD_ARTICLE.classList.remove('display-none');
+      },
+      (error) => {
+        console.log(error);
       }
-    }
-    showExamplePhoto();
-    hideAllForms();
-    closeAllDropdowns();
-    ADD_ARTICLE.classList.remove('display-none');
+    );
   }
 
   function showArticlesWallFunction() {
@@ -403,25 +337,32 @@ var actions = (function () {
   function setCategory(category) {
     closeAllDropdowns();
     hideAllForms();
-    var oReq = new XMLHttpRequest();
-    oReq.addEventListener('load', handler);
-    function handler() {
-      ARRAY_TO_SHOW = JSON.parse(this.responseText);
-      ARRAY_TO_SHOW.forEach(item => item.createdAt = new Date(item.createdAt));
-      oReq.removeEventListener('load', handler);
-    }
-    oReq.open('GET', '/articles/' + category, false);
-    oReq.send();
-    showArticlesWallFunction();
+    ERROR_TEXT = `Нет статей по категории - ${category}!`;
+    requests.sendGetHttp(`/articles/${category}`).then(
+      (response) => {
+        ARRAY_TO_SHOW = response;
+        ARRAY_TO_SHOW.forEach(item => item.createdAt = new Date(item.createdAt));
+        if (ARRAY_TO_SHOW.length !== 0) {
+          printArticles();
+          showArticlesWallFunction();
+          return;
+        }
+        byId('error-name').textContent = ERROR_TEXT;
+        hideAllForms();
+        ERROR.classList.remove('display-none');
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   }
 
   function printArticles() {
-
     closeAllDropdowns();
     showArticlesWallFunction();
     articleDOM.removeArticles();
-    var total = ARRAY_TO_SHOW.length;
-    var paginationParams = pagination.init(total, print);
+    const total = ARRAY_TO_SHOW.length;
+    const paginationParams = pagination.init(total, print);
     print(paginationParams.skip, paginationParams.top);
   }
 
@@ -430,26 +371,26 @@ var actions = (function () {
   }
 
   return {
-    init: init,
+    init,
 
-    loginFunction: loginFunction,
-    logoutFunction: logoutFunction,
-    addArticle: addArticle,
-    editArticle: editArticle,
-    removeArticle: removeArticle,
-    filterArticles: filterArticles,
-    showExamplePhoto: showExamplePhoto,
+    loginFunction,
+    logoutFunction,
+    addArticle,
+    editArticle,
+    removeArticle,
+    filterArticles,
+    showExamplePhoto,
 
-    printArticles: printArticles,
-    showAddFormFunction: showAddFormFunction,
-    showEditFormFunction: showEditFormFunction,
-    showArticlesWallFunction: showArticlesWallFunction,
-    showDetailArticleFunction: showDetailArticleFunction,
-    showDeleteFormFunction: showDeleteFormFunction,
+    printArticles,
+    showAddFormFunction,
+    showEditFormFunction,
+    showArticlesWallFunction,
+    showDetailArticleFunction,
+    showDeleteFormFunction,
 
-    showFilter: showFilter,
-    showMenu: showMenu,
-    showSearch: showSearch,
-    setCategory: setCategory
+    showFilter,
+    showMenu,
+    showSearch,
+    setCategory,
   };
 }());

@@ -1,0 +1,28 @@
+{
+    "extends": "airbnb-base",
+    "rules": {
+        "no-use-before-define": ["warn", { "functions": false }],
+        "linebreak-style": ["warn", "windows"],
+        "func-names": "off",
+        "strict": "error",
+        "comma-dangle": "off",
+        "no-unused-vars": "off",
+        "no-return-assign": "off",
+        "no-param-reassign": "off",
+        "no-underscore-dangle": "off"
+    },
+    "globals": {
+        "document": false,
+        "user": true,
+        "window": false,
+        "XMLHttpRequest": false,
+        "articleDOM": false,
+        "actions": false,
+        "pagination": false,
+        "requests": false,
+        "byId": false,
+        "byClass": false,
+        "qerSel": false,
+        "listenerId": false
+    }    
+}

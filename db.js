@@ -1,13 +1,13 @@
-var db = require('diskdb');
+const db = require('diskdb');
 
-exports.connect = function() {
-    db.connect('./database');
-}
+exports.connect = function () {
+  db.connect('./database');
+};
 
-exports.loadArticles = function() {
-    db.loadCollections(['articles']);
-}
+exports.loadArticles = function () {
+  db.loadCollections(['articles']);
+};
 
-exports.get = function() {
-    return db;
-}
+exports.get = function () {
+  return db;
+};
