@@ -18,6 +18,9 @@ app.use(express.static('public'));
 app.get('/', (req, res) => {
   res.send('index.html');
 });
+app.use('/articles', (req, res) => {
+  res.send('index.html');
+});
 
 app.listen(3000, () => {
   console.log('Example app listening on port 3000!');

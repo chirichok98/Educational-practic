@@ -3,119 +3,58 @@ user = null;
 (function () {
   articleDOM.init();
   actions.init();
- // printArticles();
   articleDOM.checkUser(user);
 }());
 
-function loginFunction() {
-  actions.loginFunction();
-}
-
-function logoutFunction() {
-  actions.logoutFunction();
-}
-
-function printArticles() {
-  actions.printArticles();
-}
-
-function addArticle() {
-  actions.addArticle();
-}
-
-function filterArticles() {
-  actions.filterArticles();
-}
-
-function showAddFormFunction() {
-  actions.showAddFormFunction();
-}
-
-function showEditFormFunction(id) {
-  actions.showEditFormFunction(id);
-}
-
-function editArticle() {
-  actions.editArticle();
-}
-
-function removeArticle(id) {
-  actions.showDeleteFormFunction(id);
-}
-
-function showDetailArticleFunction(id) {
-  actions.showDetailArticleFunction(id);
-}
-
-function showExamplePhoto() {
-  actions.showExamplePhoto();
-}
-
 function goBackFunction() {
   actions.showArticlesWallFunction();
-  printArticles();
-}
-
-function showFilter() {
-  actions.showFilter();
-}
-
-function showSearch() {
-  actions.showSearch();
-}
-
-function displayByCategory(category) {
-  actions.setCategory(category);
-}
-
-function showMenu() {
-  actions.showMenu();
+  actions.printArticles();
 }
 
 function setCategory(event) {
   const element = event.target;
   if (element.className === 'dropdown-element') {
-    displayByCategory(element.textContent);
+    actions.setCategory(element.textContent);
   }
 }
 
 function handleDropdown(event) {
   if (event.target.className === 'header-filter' || event.target.id === 'button-filter') {
-    showFilter();
+    articleDOM.showFilter();
     return;
   }
   if (event.target.className === 'header-search' || event.target.id === 'button-search') {
-    showSearch();
+    articleDOM.showSearch();
     return;
   }
   if (event.target.className === 'header-burger' || event.target.id === 'button-burger') {
-    showMenu();
+    articleDOM.showMenu();
   }
 }
 
 function handleForArticle(event) {
   const id = event.target.offsetParent.id;
   if (event.target.id === 'edit-button' && id) {
-    showEditFormFunction(id);
+    actions.showEditFormFunction(id);
     return;
   }
   if (event.target.id === 'remove-button' && id) {
-    removeArticle(id);
+    actions.showDeleteFormFunction(id);
     return;
   }
   if (event.target.tagName !== 'main' && id) {
-    showDetailArticleFunction(id);
+    actions.showDetailArticleFunction(id);
   }
 }
 
 function handleDetailArticle(event) {
   const id = document.getElementById('detail-article-id').value;
   if (event.target.id === 'detail-edit-article-button' && id) {
-    showEditFormFunction(id);
+    actions.showEditFormFunction(id);
     return;
   }
   if (event.target.id === 'detail-remove-article-button' && id) {
-    removeArticle(id);
+    actions.showDeleteFormFunction(id);
     return;
   }
   if (event.target.id === 'go-back-button') {
@@ -123,16 +62,18 @@ function handleDetailArticle(event) {
   }
 }
 
-
-listenerId('login-button', loginFunction);
-listenerId('logout-button', logoutFunction);
-listenerId('add-form-button', showAddFormFunction);
+listenerId('login-button', actions.loginFunction);
+listenerId('logout-button', actions.logoutFunction);
+listenerId('add-form-button', actions.showAddFormFunction);
 listenerId('articles-list', handleForArticle);
-listenerId('photo', showExamplePhoto);
+listenerId('photo', actions.showExamplePhoto);
 listenerId('go-back-button', goBackFunction);
-listenerId('add-article-button', addArticle);
-listenerId('edit-article-button', editArticle);
-listenerId('filter-button', filterArticles);
+listenerId('add-article-button', actions.addArticle);
+listenerId('edit-article-button', actions.editArticle);
+listenerId('filter-button', actions.filterArticles);
 listenerId('article-details', handleDetailArticle);
 listenerId('dropdown-menu', setCategory);
+listenerId('up-down', actions.upDownScroll);
 byClass('header-container')[0].addEventListener('click', handleDropdown);
+window.addEventListener('scroll', actions.scrollListener);
+

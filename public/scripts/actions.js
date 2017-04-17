@@ -1,6 +1,8 @@
 const actions = (function () {
   let ARRAY_TO_SHOW;
   let ERROR_TEXT;
+  let pageYLabel = 0;
+  const updownElem = document.getElementById('up-down');
   const LOGIN_FORM = byId('loginForm');
   const MAIN_CATEGORY = byId('main-category');
   const PHOTO = byId('photo');
@@ -15,12 +17,6 @@ const actions = (function () {
   const ADD_ARTICLE_BUTTON = byId('add-article-button');
   const EDIT_ARTICLE_BUTTON = byId('edit-article-button');
 
-  const SEARCH_FIELD = byId('dropdown-search');
-  const FILTER_FIELD = byId('dropdown-filter');
-  const BURGER_FIELD = byId('dropdown-menu');
-  const FILTER_BUTTON = byId('button-filter');
-  const SEARCH_BUTTON = byId('button-search');
-  const BURGER_BUTTON = byId('button-burger');
   const BACKGROUND = byId('background');
 
   const ARTICLES_WALL = byId('articles-wall');
@@ -63,42 +59,6 @@ const actions = (function () {
     return array.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
 
-  function closeAllDropdowns() {
-    SEARCH_FIELD.classList.toggle('display-none', true);
-    SEARCH_BUTTON.style.backgroundImage = 'url(../images/search.png)';
-    FILTER_FIELD.classList.toggle('display-none', true);
-    FILTER_BUTTON.style.backgroundImage = 'url(../images/filter.png)';
-    BURGER_FIELD.classList.toggle('display-none', true);
-    BURGER_BUTTON.style.backgroundImage = 'url(../images/menu.png)';
-  }
-
-  function showFilter() {
-    if (FILTER_BUTTON.style.backgroundImage === 'url("../images/close.png")') {
-      closeAllDropdowns();
-    } else {
-      FILTER_FIELD.classList.remove('display-none');
-      FILTER_BUTTON.style.backgroundImage = 'url(../images/close.png)';
-    }
-  }
-
-  function showSearch() {
-    if (SEARCH_BUTTON.style.backgroundImage === 'url("../images/close.png")') {
-      closeAllDropdowns();
-    } else {
-      SEARCH_FIELD.classList.remove('display-none');
-      SEARCH_BUTTON.style.backgroundImage = 'url(../images/close.png)';
-    }
-  }
-
-  function showMenu() {
-    if (BURGER_BUTTON.style.backgroundImage === 'url("../images/close.png")') {
-      closeAllDropdowns();
-    } else {
-      BURGER_FIELD.classList.remove('display-none');
-      BURGER_BUTTON.style.backgroundImage = 'url(../images/close.png)';
-    }
-  }
-
   function loginFunction() {
     if (LOGIN_FORM.login.value !== '') {
       user = LOGIN_FORM.login.value;
@@ -116,7 +76,7 @@ const actions = (function () {
     }
   }
 
-  function clearFields() {
+  function clearAddForm() {
     PHOTO.value = '';
     TITLE.value = '';
     SUMMARY.value = '';
@@ -131,9 +91,9 @@ const actions = (function () {
   function serialize(obj) {
     return Object.keys(obj).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(obj[k])}`).join('&');
   }
-   
+
   function filterArticles() {
-    closeAllDropdowns();
+    articleDOM.closeAllDropdowns();
     ERROR_TEXT = 'Нет статей, удовлетворяющих введенным параметрам!';
 
     const filterConfig = {
@@ -257,7 +217,7 @@ const actions = (function () {
   function showAddFormFunction() {
     window.scrollTo(0, 200);
     hideAllForms();
-    clearFields();
+    clearAddForm();
     FORM_TYPE.textContent = 'Добавление новости';
     EDIT_ARTICLE_BUTTON.classList.toggle('display-none', true);
     ADD_ARTICLE_BUTTON.classList.toggle('display-none', false);
@@ -267,7 +227,7 @@ const actions = (function () {
   function showDetailArticleFunction(id) {
     window.scrollTo(0, 0);
     hideAllForms();
-    closeAllDropdowns();
+    articleDOM.closeAllDropdowns();
     let article;
     requests.sendGetHttp(`/article/${id}`).then(
       (response) => {
@@ -314,7 +274,7 @@ const actions = (function () {
         }
         showExamplePhoto();
         hideAllForms();
-        closeAllDropdowns();
+        articleDOM.closeAllDropdowns();
         ADD_ARTICLE.classList.remove('display-none');
       },
       (error) => {
@@ -335,7 +295,7 @@ const actions = (function () {
   }
 
   function setCategory(category) {
-    closeAllDropdowns();
+    articleDOM.closeAllDropdowns();
     hideAllForms();
     ERROR_TEXT = `Нет статей по категории - ${category}!`;
     requests.sendGetHttp(`/articles/${category}`).then(
@@ -358,7 +318,7 @@ const actions = (function () {
   }
 
   function printArticles() {
-    closeAllDropdowns();
+    articleDOM.closeAllDropdowns();
     showArticlesWallFunction();
     articleDOM.removeArticles();
     const total = ARRAY_TO_SHOW.length;
@@ -369,6 +329,50 @@ const actions = (function () {
   function print(skip, top) {
     articleDOM.showArticles(sort(ARRAY_TO_SHOW).slice(skip, skip + top));
   }
+
+  function upDownScroll() {
+    const pageY = window.pageYOffset || document.documentElement.scrollTop;
+    const headerHeight = document.getElementsByTagName('header')[0].offsetHeight;
+
+    switch (this.className) {
+      case 'up':
+        pageYLabel = pageY;
+        window.scrollTo(0, headerHeight);
+        this.className = 'down';
+        break;
+
+      case 'down':
+        window.scrollTo(0, pageYLabel);
+        this.className = 'up';
+        break;
+    }
+  }
+
+  function scrollListener() {
+    const pageY = window.pageYOffset || document.documentElement.scrollTop;
+    const innerHeight = document.documentElement.clientHeight / 2;
+
+    switch (updownElem.className) {
+      case '':
+        if (pageY > innerHeight) {
+          updownElem.className = 'up';
+        }
+        break;
+
+      case 'up':
+        if (pageY < innerHeight) {
+          updownElem.className = '';
+        }
+        break;
+
+      case 'down':
+        if (pageY > innerHeight) {
+          updownElem.className = 'up';
+        }
+        break;
+    }
+  }
+
 
   return {
     init,
@@ -388,9 +392,8 @@ const actions = (function () {
     showDetailArticleFunction,
     showDeleteFormFunction,
 
-    showFilter,
-    showMenu,
-    showSearch,
     setCategory,
+    upDownScroll,
+    scrollListener,
   };
 }());

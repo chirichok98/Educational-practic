@@ -1,10 +1,52 @@
 const articleDOM = (function () {
   let ARTICLE_TEMPLATE;
   let ARTICLE_LIST_NODE;
+  const SEARCH_FIELD = byId('dropdown-search');
+  const SEARCH_BUTTON = byId('button-search');
+  const FILTER_FIELD = byId('dropdown-filter');
+  const FILTER_BUTTON = byId('button-filter');
+  const BURGER_FIELD = byId('dropdown-menu');
+  const BURGER_BUTTON = byId('button-burger');
 
   function init() {
     ARTICLE_TEMPLATE = qerSel(document, '#template-article');
     ARTICLE_LIST_NODE = qerSel(document, '#articles-list');
+  }
+
+  function closeAllDropdowns() {
+    SEARCH_FIELD.classList.toggle('display-none', true);
+    SEARCH_BUTTON.style.backgroundImage = 'url(../images/search.png)';
+    FILTER_FIELD.classList.toggle('display-none', true);
+    FILTER_BUTTON.style.backgroundImage = 'url(../images/filter.png)';
+    BURGER_FIELD.classList.toggle('display-none', true);
+    BURGER_BUTTON.style.backgroundImage = 'url(../images/menu.png)';
+  }
+
+  function showFilter() {
+    if (FILTER_BUTTON.style.backgroundImage === 'url("../images/close.png")') {
+      closeAllDropdowns();
+    } else {
+      FILTER_FIELD.classList.remove('display-none');
+      FILTER_BUTTON.style.backgroundImage = 'url(../images/close.png)';
+    }
+  }
+
+  function showSearch() {
+    if (SEARCH_BUTTON.style.backgroundImage === 'url("../images/close.png")') {
+      closeAllDropdowns();
+    } else {
+      SEARCH_FIELD.classList.remove('display-none');
+      SEARCH_BUTTON.style.backgroundImage = 'url(../images/close.png)';
+    }
+  }
+
+  function showMenu() {
+    if (BURGER_BUTTON.style.backgroundImage === 'url("../images/close.png")') {
+      closeAllDropdowns();
+    } else {
+      BURGER_FIELD.classList.remove('display-none');
+      BURGER_BUTTON.style.backgroundImage = 'url(../images/close.png)';
+    }
   }
 
   function displayAdditionalButtons(user) {
@@ -34,6 +76,30 @@ const articleDOM = (function () {
       login.classList.remove('display-none');
     }
     displayAdditionalButtons(user);
+  }
+
+  function renderArticles(articles) {
+    return articles.map(article => renderArticle(article));
+  }
+
+  function renderArticle(article) {
+    const template = ARTICLE_TEMPLATE;
+    qerSel(template.content, '.content').setAttribute('id', article._id);
+    qerSel(template.content, '.content').style.background = `linear-gradient(rgba(0, 0, 0, 0.5), 
+        rgba(0, 0, 0, 0.5)), url('${article.photo}') no-repeat`;
+    qerSel(template.content, '.content-main-category').textContent = article.mainCategory;
+    qerSel(template.content, '.content-title').textContent = article.title;
+    qerSel(template.content, '.content-tags').textContent = article.tags.join(' ');
+    qerSel(template.content, '.content-creator').textContent = article.author;
+    qerSel(template.content, '.content-date').textContent =
+      `${article.createdAt.toLocaleDateString()} 
+      ${article.createdAt.toLocaleTimeString()}`;
+    if (user) {
+      qerSel(template.content, '.addition-buttons').classList.remove('display-none');
+      return qerSel(template.content, '.content').cloneNode(true);
+    }
+    qerSel(template.content, '.addition-buttons').classList.add('display-none');
+    return qerSel(template.content, '.content').cloneNode(true);
   }
 
   function showArticles(articles) {
@@ -85,28 +151,6 @@ const articleDOM = (function () {
     return false;
   }
 
-  function renderArticles(articles) {
-    return articles.map(article => renderArticle(article));
-  }
-
-  function renderArticle(article) {
-    const template = ARTICLE_TEMPLATE;
-    qerSel(template.content, '.content').setAttribute('id', article._id);
-    qerSel(template.content, '.content').style.background = `linear-gradient(rgba(0, 0, 0, 0.5), 
-        rgba(0, 0, 0, 0.5)), url('${article.photo}') no-repeat`;
-    qerSel(template.content, '.content-main-category').textContent = article.mainCategory;
-    qerSel(template.content, '.content-title').textContent = article.title;
-    qerSel(template.content, '.content-tags').textContent = article.tags.join(' ');
-    qerSel(template.content, '.content-creator').textContent = article.author;
-    qerSel(template.content, '.content-date').textContent = `${article.createdAt.toLocaleDateString()} 
-        ${article.createdAt.toLocaleTimeString()}`;
-    if (user) {
-      qerSel(template.content, '.addition-buttons').classList.remove('display-none');
-      return qerSel(template.content, '.content').cloneNode(true);
-    }
-    qerSel(template.content, '.addition-buttons').classList.add('display-none');
-    return qerSel(template.content, '.content').cloneNode(true);
-  }
 
   return {
     init,
@@ -116,5 +160,9 @@ const articleDOM = (function () {
     editArticle,
     removeArticles,
     checkUser,
+    closeAllDropdowns,
+    showFilter,
+    showMenu,
+    showSearch,
   };
 }());

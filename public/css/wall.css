@@ -1,8 +1,33 @@
+#up-down {
+  position: fixed;
+
+  top: 100px;
+  left: 1.5%;
+  height: 30px;
+  width: 30px;
+
+  z-index: 9;
+  cursor: pointer;
+}
+
+#up-down.up {
+  background-image: url(../images/updown.png);
+  background-size: cover;
+}
+
+#up-down.down {
+  background-image: url(../images/updown.png);
+  background-size: cover;
+  transform: scaleY(-1);
+}
+
 #articles-wall {
     width: 94%;
     
     margin-top: 80px;    
-    margin-left:auto;
+    margin-left: auto;
+
+    scroll-behavior: smooth;
 }
 
 .grow { 
