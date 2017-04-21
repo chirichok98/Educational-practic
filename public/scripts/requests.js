@@ -3,7 +3,6 @@ const requests = (function () {
     return new Promise((resolve, reject) => {
       const oReq = new XMLHttpRequest();
       oReq.open('GET', url);
-
       oReq.addEventListener('load', handle);
       function handle() {
         if (this.status === 200) {
@@ -69,7 +68,7 @@ const requests = (function () {
       oReq.onerror = function () {
         reject(new Error("Article isn't valid"));
       };
-
+      console.log(article);
       oReq.send(JSON.stringify(article));
     });
   }

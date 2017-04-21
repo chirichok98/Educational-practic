@@ -21,7 +21,10 @@ exports.getArticles = function (req, res) {
       to: dateTo,
     },
   };
-  Articles.getArticles(req.query.skip, req.query.top, filterConfig).then(
+  const skip = req.query.skip;
+  const top = req.query.top;
+  const category = req.query.category;
+  Articles.getArticles(skip, top, filterConfig, category).then(
     response => res.send(response),
     error => res.sendStatus(404)
   );
@@ -48,7 +51,8 @@ exports.createArticle = function (req, res) {
   };
   Articles.createArticle(article).then(
     response => res.send(
-      { id: response._id,
+      {
+        id: response._id,
         createdAt: response.createdAt.toString(),
         author: response.author
       }),
@@ -61,22 +65,20 @@ exports.removeArticle = function (req, res) {
 };
 
 exports.updateArticle = function (req, res) {
-  const newArticle = Articles.getArticleByID(req.params.id);
-  if (req.body.mainCategory) { newArticle.mainCategory = req.body.mainCategory; }
-  if (req.body.photo) { newArticle.photo = req.body.photo; }
-  if (req.body.title) { newArticle.title = req.body.title; }
-  if (req.body.summary) { newArticle.summary = req.body.summary; }
-  if (req.body.content) { newArticle.content = req.body.content; }
-  if (req.body.tags) { newArticle.tags = req.body.tags; }
-  Articles.updateArticle(newArticle).then(
-      () => res.sendStatus(200),
-      () => res.sendStatus(405)
-  );
-};
-
-exports.getArticlesByCategory = function (req, res) {
-  Articles.getArticlesByCategory(req.params.category).then(
-    response => res.send(response),
-    error => res.sendStatus(404)
+  Articles.getArticleByID(req.params.id).then(
+    (response) => {
+      const newArticle = response;
+      if (req.body.mainCategory) { newArticle.mainCategory = req.body.mainCategory; }
+      if (req.body.photo) { newArticle.photo = req.body.photo; }
+      if (req.body.title) { newArticle.title = req.body.title; }
+      if (req.body.summary) { newArticle.summary = req.body.summary; }
+      if (req.body.content) { newArticle.content = req.body.content; }
+      if (req.body.tags) { newArticle.tags = req.body.tags; }
+      Articles.updateArticle(newArticle).then(
+        () => res.sendStatus(200),
+        () => res.sendStatus(405)
+      );
+    },
+    error => console.log(error)
   );
 };

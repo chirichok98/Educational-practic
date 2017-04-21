@@ -3,8 +3,8 @@ const db = require('../db');
 db.connect();
 db.loadArticles();
 
-exports.getArticles = function (skip, top, filterConfig) {
-  return new Promise(resolve => resolve(getArticles(skip, top, filterConfig)));
+exports.getArticles = function (skip, top, filterConfig, category) {
+  return new Promise(resolve => resolve(getArticles(skip, top, filterConfig, category)));
 };
 
 exports.getArticleByID = function getArticleByID(id) {
@@ -42,23 +42,16 @@ exports.removeArticle = function (id) {
   });
 };
 
-exports.getArticlesByCategory = function (category) {
-  return new Promise(resolve =>
-    resolve(getArticlesByCategory(category)));
-};
-
-function getArticlesByCategory(category) {
-  if (category === 'Все') {
-    return new Promise(resolve =>
-      resolve(db.get().articles.find({ deleted: false })));
+function getArticles(skip, top, filterConfig, category) {
+  if (category) {
+    console.log(category);
+    if (category === 'Все') {
+      const result = db.get().articles.find({ deleted: false });
+      return { length: result.length, array: result.slice(skip, top) };
+    }
+    const result = db.get().articles.find({ mainCategory: category, deleted: false });
+    return { length: result.length, array: result.slice(skip, top) };
   }
-  return new Promise(resolve =>
-    resolve(db.get().articles.find({ mainCategory: category, deleted: false })));
-}
-
-function getArticles(skip, top, filterConfig) {
-  skip = skip || 0;
-  top = top || db.get().articles.count();
   if (filterConfig) {
     const result = db.get().articles.find().filter((item) => {
       if (item.deleted) {
@@ -81,12 +74,17 @@ function getArticles(skip, top, filterConfig) {
       }
       return true;
     });
-    return result.slice(skip, skip + top);
+    return { length: result.length, array: result.slice(skip, top) };
   }
-  return db.get().articles.find().filter(item => !item.deleted).slice(skip, skip + top);
+  const array = db.get().articles.find({ deleted: false });
+  return { length: array.length, array: array.slice(skip, top) };
 }
 
 function validateArticle(article) {
   return article && article.title.length !== 0 &&
     article.summary.length !== 0 && article.content.length !== 0;
+}
+
+function sort(array) {
+  return array.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 }

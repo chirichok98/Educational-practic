@@ -1,6 +1,4 @@
 const actions = (function () {
-  let ARRAY_TO_SHOW;
-  let ERROR_TEXT;
   let pageYLabel = 0;
   const updownElem = document.getElementById('up-down');
   const LOGIN_FORM = byId('loginForm');
@@ -43,20 +41,7 @@ const actions = (function () {
   }
 
   function fillArrayFirstTime() {
-    requests.sendGetHttp('/articles').then(
-      (response) => {
-        ARRAY_TO_SHOW = response;
-        ARRAY_TO_SHOW.forEach(item => item.createdAt = new Date(item.createdAt));
-        printArticles();
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  }
-
-  function sort(array) {
-    return array.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    printArticles();
   }
 
   function loginFunction() {
@@ -92,11 +77,52 @@ const actions = (function () {
     return Object.keys(obj).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(obj[k])}`).join('&');
   }
 
-  function filterArticles() {
+  function printArticles(category) {
     articleDOM.closeAllDropdowns();
-    ERROR_TEXT = 'Нет статей, удовлетворяющих введенным параметрам!';
-
+    showArticlesWallFunction();
+    articleDOM.removeArticles();
+    if (!category) {
+      category = '';
+    }
+    const ERROR_TEXT = 'Нет статей, удовлетворяющих введенным параметрам!';
     const filterConfig = {
+      skip: 0,
+      top: 6,
+      category,
+      author: FILTER_AUTHOR.value,
+      from: new Date(FILTER_DATE_FROM.value),
+      to: new Date(FILTER_DATE_TO.value),
+    };
+    const tags = FILTER_TAGS.value.replace(/#/g, '').trim().split(' ');
+    if (tags[0] !== '') {
+      filterConfig.tags = tags;
+    }
+    const query = serialize(filterConfig);
+    let paginationParams = 0;
+    requests.sendGetHttp(`/articles?${query}`).then(
+      (response) => {
+        paginationParams = pagination.init(response.length, filter);
+        const ARRAY_TO_SHOW = response.array;
+        ARRAY_TO_SHOW.forEach(item => item.createdAt = new Date(item.createdAt));
+        if (response.length !== 0) {
+          displayArticles(ARRAY_TO_SHOW);
+          return;
+        }
+        byId('error-name').textContent = ERROR_TEXT;
+        hideAllForms();
+        ERROR.classList.remove('display-none');
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }
+
+  function filter(paramSkip, paramTop) {
+    articleDOM.closeAllDropdowns();
+    const filterConfig = {
+      skip: paramSkip,
+      top: paramSkip + paramTop,
       author: FILTER_AUTHOR.value,
       from: new Date(FILTER_DATE_FROM.value),
       to: new Date(FILTER_DATE_TO.value),
@@ -108,15 +134,11 @@ const actions = (function () {
     const query = serialize(filterConfig);
     requests.sendGetHttp(`/articles?${query}`).then(
       (response) => {
-        ARRAY_TO_SHOW = response;
+        const ARRAY_TO_SHOW = response.array;
         ARRAY_TO_SHOW.forEach(item => item.createdAt = new Date(item.createdAt));
-        if (ARRAY_TO_SHOW.length !== 0) {
-          printArticles();
-          return;
+        if (response.length !== 0) {
+          displayArticles(ARRAY_TO_SHOW);
         }
-        byId('error-name').textContent = ERROR_TEXT;
-        hideAllForms();
-        ERROR.classList.remove('display-none');
       },
       (error) => {
         console.log(error);
@@ -136,14 +158,8 @@ const actions = (function () {
     };
     requests.sendPostHttp('/articles', article).then(
       (response) => {
-        const res = response;
-        if (res) {
-          article._id = res.id;
-          article.createdAt = new Date(res.createdAt);
-          ARRAY_TO_SHOW.push(article);
-          printArticles();
-          showArticlesWallFunction();
-        }
+        printArticles();
+        showArticlesWallFunction();
       },
       (error) => {
         console.log(error);
@@ -163,10 +179,7 @@ const actions = (function () {
     };
     requests.sendPutHttp(`/articles/${id}`, article).then(
       (response) => {
-        const old = ARRAY_TO_SHOW.find(item => item._id === id);
-        const keys = Object.keys(article);
-        keys.forEach(key => old[key] = article[key]);
-        articleDOM.editArticle(id, old);
+        printArticles();
         showArticlesWallFunction();
       },
       (error) => {
@@ -179,7 +192,6 @@ const actions = (function () {
     requests.sendDeleteHttp(`/articles/${id}`).then(
       (response) => {
         articleDOM.removeArticle(id);
-        ARRAY_TO_SHOW.splice(ARRAY_TO_SHOW.findIndex(item => item._id === id), 1);
         printArticles();
         showArticlesWallFunction();
       },
@@ -241,6 +253,8 @@ const actions = (function () {
         DETAIL_CONTENT.textContent = article.content;
         DETAIL_TAGS.textContent = `#${article.tags.join(' #')}`;
         DETAIL_AUTHOR.textContent = article.author;
+
+
         ARTICLE_DETAILS.classList.remove('display-none');
       },
       (error) => {
@@ -285,7 +299,6 @@ const actions = (function () {
 
   function showArticlesWallFunction() {
     hideAllForms();
-    window.scrollTo(0, 0);
     ARTICLES_WALL.classList.remove('display-none');
   }
 
@@ -293,41 +306,34 @@ const actions = (function () {
     EXAMPLE_PHOTO.setAttribute('src', PHOTO.value);
     EXAMPLE_PHOTO.classList.toggle('display-none', false);
   }
-
-  function setCategory(category) {
-    articleDOM.closeAllDropdowns();
-    hideAllForms();
-    ERROR_TEXT = `Нет статей по категории - ${category}!`;
-    requests.sendGetHttp(`/articles/${category}`).then(
-      (response) => {
-        ARRAY_TO_SHOW = response;
-        ARRAY_TO_SHOW.forEach(item => item.createdAt = new Date(item.createdAt));
-        if (ARRAY_TO_SHOW.length !== 0) {
-          printArticles();
-          showArticlesWallFunction();
-          return;
+  /*
+    function setCategory(category) {
+      articleDOM.closeAllDropdowns();
+      hideAllForms();
+      ERROR_TEXT = `Нет статей по категории - ${category}!`;
+      requests.sendGetHttp(`/articles/${category}`).then(
+        (response) => {
+          ARRAY_TO_SHOW = response;
+          ARRAY_TO_SHOW.forEach(item => item.createdAt = new Date(item.createdAt));
+          if (ARRAY_TO_SHOW.length !== 0) {
+            printArticles();
+            showArticlesWallFunction();
+            return;
+          }
+          byId('error-name').textContent = ERROR_TEXT;
+          hideAllForms();
+          ERROR.classList.remove('display-none');
+        },
+        (error) => {
+          console.log(error);
         }
-        byId('error-name').textContent = ERROR_TEXT;
-        hideAllForms();
-        ERROR.classList.remove('display-none');
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  }
-
-  function printArticles() {
+      );
+    }
+  */
+  function displayArticles(array) {
     articleDOM.closeAllDropdowns();
+    articleDOM.showArticles(array);
     showArticlesWallFunction();
-    articleDOM.removeArticles();
-    const total = ARRAY_TO_SHOW.length;
-    const paginationParams = pagination.init(total, print);
-    print(paginationParams.skip, paginationParams.top);
-  }
-
-  function print(skip, top) {
-    articleDOM.showArticles(sort(ARRAY_TO_SHOW).slice(skip, skip + top));
   }
 
   function upDownScroll() {
@@ -373,7 +379,6 @@ const actions = (function () {
     }
   }
 
-
   return {
     init,
 
@@ -382,17 +387,16 @@ const actions = (function () {
     addArticle,
     editArticle,
     removeArticle,
-    filterArticles,
+    printArticles,
     showExamplePhoto,
 
-    printArticles,
     showAddFormFunction,
     showEditFormFunction,
     showArticlesWallFunction,
     showDetailArticleFunction,
     showDeleteFormFunction,
 
-    setCategory,
+    //    setCategory,
     upDownScroll,
     scrollListener,
   };
