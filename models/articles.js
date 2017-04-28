@@ -44,7 +44,7 @@ exports.removeArticle = function (id) {
 
 function getArticles(skip, top, filterConfig, category) {
   if (category) {
-    console.log(category);
+    console.log(`cat${category}`);
     if (category === 'Все') {
       const result = db.get().articles.find({ deleted: false });
       return { length: result.length, array: result.slice(skip, top) };
@@ -53,6 +53,7 @@ function getArticles(skip, top, filterConfig, category) {
     return { length: result.length, array: result.slice(skip, top) };
   }
   if (filterConfig) {
+    console.log(filterConfig);
     const result = db.get().articles.find().filter((item) => {
       if (item.deleted) {
         return false;

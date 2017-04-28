@@ -14,7 +14,6 @@ const pagination = (function () {
     
     window.addEventListener('scroll', infiniteScroll);
     if (getTotalPages() <= CURRENT_PAGE) {
-      console.log('nothing to do');
       window.removeEventListener('scroll', infiniteScroll);
       getParams();
     }

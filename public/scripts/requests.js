@@ -68,7 +68,6 @@ const requests = (function () {
       oReq.onerror = function () {
         reject(new Error("Article isn't valid"));
       };
-      console.log(article);
       oReq.send(JSON.stringify(article));
     });
   }

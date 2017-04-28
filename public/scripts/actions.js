@@ -81,7 +81,7 @@ const actions = (function () {
     articleDOM.closeAllDropdowns();
     showArticlesWallFunction();
     articleDOM.removeArticles();
-    if (!category) {
+    if (!category || category.type === 'click') {
       category = '';
     }
     const ERROR_TEXT = 'Нет статей, удовлетворяющих введенным параметрам!';
