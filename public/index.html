@@ -139,7 +139,7 @@
             <input required type="text" id="summary" required maxlength=200 name="article-summary" placeholder="Введите краткое описание">
             <br>
             <label for="content">Содержание:</label>
-            <textarea required type="text" id="content" required maxlength=8888 name="article-content" placeholder="Введите содержание новости"></textarea>
+            <textarea required type="text" id="content" name="article-content" placeholder="Введите содержание новости"></textarea>
             <br>
             <label for="tag">Теги:</label>
             <input type="text" class="tag" required maxlength=20 name="article-tag" placeholder="Тег">
@@ -154,6 +154,10 @@
 
             <button type="button" class="" id="add-article-button">Опубликовать новость</button>
             <button type="button" class="display-none" id="edit-article-button">Зафиксировать изменения</button>
+            
+            <input type="url" id="meduza" name="meduza" placeholder="https://meduza.io/bla/bla/bla">
+            <button type="button" id="add-meduza" class="but-exception">Добавить с Meduza.io</button>
+
             <button type="button" id="go-back-button">На главную</button>
         </form>
     </div>

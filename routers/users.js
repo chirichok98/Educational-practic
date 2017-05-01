@@ -11,13 +11,13 @@ const storeOptions = {
   path: './database',
   name: 'sessions',
 };
+const storeDisk = new SessionStore(storeOptions);
 const sessionOptions = {
   secret: 'MY_SECRET',
   resave: false,
   saveUninitialized: false,
   store: storeDisk
 };
-const storeDisk = new SessionStore(storeOptions);
 
 router.use(cookieParser());
 router.use(session(sessionOptions));

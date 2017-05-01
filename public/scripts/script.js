@@ -74,6 +74,7 @@ listenerId('filter-button', actions.printArticles);
 listenerId('article-details', handleDetailArticle);
 listenerId('dropdown-menu', setCategory);
 listenerId('up-down', actions.upDownScroll);
+listenerId('add-meduza', actions.addMeduza);
 byClass('header-container')[0].addEventListener('click', handleDropdown);
 window.addEventListener('scroll', actions.scrollListener);
 
