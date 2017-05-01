@@ -11,7 +11,7 @@ const pagination = (function () {
     TOTAL = total;
     CURRENT_PAGE = 1;
     SHOW_MORE_CALLBACK = showMoreCb;
-    
+
     window.addEventListener('scroll', infiniteScroll);
     if (getTotalPages() <= CURRENT_PAGE) {
       window.removeEventListener('scroll', infiniteScroll);

@@ -6,7 +6,7 @@ const requests = (function () {
       oReq.addEventListener('load', handle);
       function handle() {
         if (this.status === 200) {
-          resolve(JSON.parse(this.response));
+          resolve(this.response);
           oReq.removeEventListener('load', handle);
           return;
         }

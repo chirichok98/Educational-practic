@@ -3,11 +3,10 @@ user = null;
 (function () {
   articleDOM.init();
   actions.init();
-  articleDOM.checkUser(user);
 }());
 
-function goBackFunction(pixel) {
-
+function goBackFunction() {
+  actions.showArticlesWallFunction();
 }
 
 function setCategory(event) {

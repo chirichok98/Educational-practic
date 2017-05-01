@@ -8,6 +8,10 @@ exports.loadArticles = function () {
   db.loadCollections(['articles']);
 };
 
+exports.loadUsers = function () {
+  db.loadCollections(['users']);
+};
+
 exports.get = function () {
   return db;
 };

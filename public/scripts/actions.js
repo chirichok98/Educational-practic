@@ -37,7 +37,20 @@ const actions = (function () {
   const FILTER_AUTHOR = byId('filter-author');
 
   function init() {
-    fillArrayFirstTime();
+    requests.sendGetHttp('/user').then(
+      (res) => {
+        if (!res) {
+          user = null;
+          fillArrayFirstTime();
+          return;
+        }
+        res = JSON.parse(res);
+        user = res.login || null;
+        fillArrayFirstTime();
+        articleDOM.checkUser(user);
+      },
+      () => console.log('errrrorororororor')
+    );
   }
 
   function fillArrayFirstTime() {
@@ -46,19 +59,33 @@ const actions = (function () {
 
   function loginFunction() {
     if (LOGIN_FORM.login.value !== '') {
-      user = LOGIN_FORM.login.value;
-      articleDOM.checkUser(user);
+      user = {
+        login: LOGIN_FORM.login.value,
+        password: LOGIN_FORM.password.value,
+      };
+
+      requests.sendPostHttp('/login', user).then(
+        (res) => {
+          articleDOM.checkUser(res.login);
+        },
+        rej => console.log('errroororororroororororo')
+      );
     }
   }
 
   function logoutFunction() {
-    user = null;
-    LOGIN_FORM.login.value = '';
-    LOGIN_FORM.password.value = '';
-    articleDOM.checkUser(user);
-    if (!ADD_ARTICLE.classList.contains('display-none')) {
-      showArticlesWallFunction();
-    }
+    requests.sendGetHttp('/logout').then(
+      () => {
+        user = null;
+        LOGIN_FORM.login.value = '';
+        LOGIN_FORM.password.value = '';
+        articleDOM.checkUser(user);
+        if (!ADD_ARTICLE.classList.contains('display-none')) {
+          showArticlesWallFunction();
+        }
+      },
+      () => console.log('errrrorororororor')
+    );
   }
 
   function clearAddForm() {
@@ -83,6 +110,10 @@ const actions = (function () {
     articleDOM.removeArticles();
     if (!category || category.type === 'click') {
       category = '';
+    } else {
+      FILTER_AUTHOR.value = '';
+      FILTER_DATE_FROM.value = '';
+      FILTER_DATE_TO.value = '';
     }
     const ERROR_TEXT = 'Нет статей, удовлетворяющих введенным параметрам!';
     const filterConfig = {
@@ -99,8 +130,9 @@ const actions = (function () {
     }
     const query = serialize(filterConfig);
     let paginationParams = 0;
-    requests.sendGetHttp(`/articles?${query}`).then(
+    requests.sendGetHttp(`articles?${query}`).then(
       (response) => {
+        response = JSON.parse(response);
         paginationParams = pagination.init(response.length, filter);
         const ARRAY_TO_SHOW = response.array;
         ARRAY_TO_SHOW.forEach(item => item.createdAt = new Date(item.createdAt));
@@ -134,6 +166,7 @@ const actions = (function () {
     const query = serialize(filterConfig);
     requests.sendGetHttp(`/articles?${query}`).then(
       (response) => {
+        response = JSON.parse(response);
         const ARRAY_TO_SHOW = response.array;
         ARRAY_TO_SHOW.forEach(item => item.createdAt = new Date(item.createdAt));
         if (response.length !== 0) {
@@ -241,9 +274,9 @@ const actions = (function () {
     hideAllForms();
     articleDOM.closeAllDropdowns();
     let article;
-    requests.sendGetHttp(`/article/${id}`).then(
+    requests.sendGetHttp(`/articles/${id}`).then(
       (response) => {
-        article = response;
+        article = JSON.parse(response);
         article.createdAt = new Date(article.createdAt);
         DETAIL_ARTICLE_ID.value = id;
         DETAIL_MAIN_CATEGORY.textContent = article.mainCategory;
@@ -272,9 +305,9 @@ const actions = (function () {
 
     let article;
 
-    requests.sendGetHttp(`/article/${id}`).then(
+    requests.sendGetHttp(`/articles/${id}`).then(
       (response) => {
-        article = response;
+        article = JSON.parse(response);
         article.createdAt = new Date(article.createdAt);
         MAIN_CATEGORY.value = article.mainCategory;
         PHOTO.value = article.photo;
@@ -306,30 +339,7 @@ const actions = (function () {
     EXAMPLE_PHOTO.setAttribute('src', PHOTO.value);
     EXAMPLE_PHOTO.classList.toggle('display-none', false);
   }
-  /*
-    function setCategory(category) {
-      articleDOM.closeAllDropdowns();
-      hideAllForms();
-      ERROR_TEXT = `Нет статей по категории - ${category}!`;
-      requests.sendGetHttp(`/articles/${category}`).then(
-        (response) => {
-          ARRAY_TO_SHOW = response;
-          ARRAY_TO_SHOW.forEach(item => item.createdAt = new Date(item.createdAt));
-          if (ARRAY_TO_SHOW.length !== 0) {
-            printArticles();
-            showArticlesWallFunction();
-            return;
-          }
-          byId('error-name').textContent = ERROR_TEXT;
-          hideAllForms();
-          ERROR.classList.remove('display-none');
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-    }
-  */
+
   function displayArticles(array) {
     articleDOM.closeAllDropdowns();
     articleDOM.showArticles(array);
@@ -396,7 +406,6 @@ const actions = (function () {
     showDetailArticleFunction,
     showDeleteFormFunction,
 
-    //    setCategory,
     upDownScroll,
     scrollListener,
   };

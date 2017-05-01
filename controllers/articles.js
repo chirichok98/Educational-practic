@@ -79,6 +79,6 @@ exports.updateArticle = function (req, res) {
         () => res.sendStatus(405)
       );
     },
-    error => console.log(error)
+    error => res.sendStatus(500)
   );
 };

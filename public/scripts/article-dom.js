@@ -68,10 +68,13 @@ const articleDOM = (function () {
     const login = byClass('log-in')[0];
     const logout = byClass('log-out')[0];
     if (user) {
+      qerSel(logout, '.user-name').value = user;
       login.classList.add('display-none');
       logout.classList.remove('display-none');
       byClass('user-name')[0].textContent = user;
     } else {
+      qerSel(login, 'input[name="login"]').value = '';
+      qerSel(login, 'input[name="password"]').value = '';
       logout.classList.add('display-none');
       login.classList.remove('display-none');
     }
@@ -83,23 +86,23 @@ const articleDOM = (function () {
   }
 
   function renderArticle(article) {
-    const template = ARTICLE_TEMPLATE;
-    qerSel(template.content, '.content').setAttribute('id', article._id);
-    qerSel(template.content, '.content').style.background = `linear-gradient(rgba(0, 0, 0, 0.5), 
+    const template = ARTICLE_TEMPLATE.content;
+    qerSel(template, '.content').setAttribute('id', article._id);
+    qerSel(template, '.content').style.background = `linear-gradient(rgba(0, 0, 0, 0.5), 
         rgba(0, 0, 0, 0.5)), url('${article.photo}') no-repeat`;
-    qerSel(template.content, '.content-main-category').textContent = article.mainCategory;
-    qerSel(template.content, '.content-title').textContent = article.title;
-    qerSel(template.content, '.content-tags').textContent = article.tags.join(' ');
-    qerSel(template.content, '.content-creator').textContent = article.author;
-    qerSel(template.content, '.content-date').textContent =
+    qerSel(template, '.content-main-category').textContent = article.mainCategory;
+    qerSel(template, '.content-title').textContent = article.title;
+    qerSel(template, '.content-tags').textContent = article.tags.join(' ');
+    qerSel(template, '.content-creator').textContent = article.author;
+    qerSel(template, '.content-date').textContent =
       `${article.createdAt.toLocaleDateString()} 
       ${article.createdAt.toLocaleTimeString()}`;
     if (user) {
-      qerSel(template.content, '.addition-buttons').classList.remove('display-none');
-      return qerSel(template.content, '.content').cloneNode(true);
+      qerSel(template, '.addition-buttons').classList.remove('display-none');
+      return qerSel(template, '.content').cloneNode(true);
     }
-    qerSel(template.content, '.addition-buttons').classList.add('display-none');
-    return qerSel(template.content, '.content').cloneNode(true);
+    qerSel(template, '.addition-buttons').classList.add('display-none');
+    return qerSel(template, '.content').cloneNode(true);
   }
 
   function showArticles(articles) {
