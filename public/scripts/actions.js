@@ -379,13 +379,14 @@ const actions = (function () {
     requests.sendGetHttp(`/meduza?url=${url}`).then(
       (resolve) => {
         byId('meduza').value = '';
-        resolve = JSON.parse(resolve);
-        PHOTO.value = resolve.image;
-        TITLE.value = resolve.title;
-        SUMMARY.value = resolve.summary;
-        CONTENT.value = convertHtmlToText(resolve.content);
+        const article = JSON.parse(resolve);
+        
+        PHOTO.value = article.photo;
+        TITLE.value = article.title;
+        SUMMARY.value = article.summary;
+        CONTENT.value = convertHtmlToText(article.content);
       },
-      (reject) => { console.log(reject); }
+      (reject) => { console.log('Invalid article'); }
     );
   }
 
