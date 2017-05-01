@@ -13,5 +13,3 @@ router.put('/:id', controller.updateArticle);
 router.delete('/:id', controller.removeArticle);
 
 module.exports = router;
-
-<p>Это будет удалено и закроет тег </p>
