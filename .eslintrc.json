@@ -10,7 +10,8 @@
         "no-return-assign": "off",
         "no-param-reassign": "off",
         "no-underscore-dangle": "off",
-        "default-case": "off"
+        "default-case": "off",
+        "consistent-return": "off"
     },
     "globals": {
         "document": false,
