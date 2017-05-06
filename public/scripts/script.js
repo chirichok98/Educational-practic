@@ -8,13 +8,13 @@ user = null;
 function goBackFunction() {
   actions.showArticlesWallFunction();
 }
-
+/*
 function setCategory(event) {
   const element = event.target;
   if (element.className === 'dropdown-element') {
     actions.printArticles(element.textContent);
   }
-}
+}*/
 
 function handleDropdown(event) {
   if (event.target.className === 'header-filter' || event.target.id === 'button-filter') {
@@ -62,19 +62,20 @@ function handleDetailArticle(event) {
   }
 }
 
-listenerId('login-button', actions.loginFunction);
-listenerId('logout-button', actions.logoutFunction);
-listenerId('add-form-button', actions.showAddFormFunction);
-listenerId('articles-list', handleForArticle);
-listenerId('photo', actions.showExamplePhoto);
-listenerId('go-back-button', goBackFunction);
-listenerId('add-article-button', actions.addArticle);
-listenerId('edit-article-button', actions.editArticle);
-listenerId('filter-button', actions.printArticles);
-listenerId('article-details', handleDetailArticle);
-listenerId('dropdown-menu', setCategory);
-listenerId('up-down', actions.upDownScroll);
-listenerId('add-meduza', actions.addMeduza);
-byClass('header-container')[0].addEventListener('click', handleDropdown);
-window.addEventListener('scroll', actions.scrollListener);
-
+(function () {
+  listenerId('login-button', actions.loginFunction);
+  listenerId('logout-button', actions.logoutFunction);
+  listenerId('add-form-button', actions.showAddFormFunction);
+  listenerId('articles-list', handleForArticle);
+  listenerId('photo', actions.showExamplePhoto);
+  listenerId('go-back-button', goBackFunction);
+  listenerId('add-article-button', actions.addArticle);
+  listenerId('edit-article-button', actions.editArticle);
+  listenerId('filter-button', actions.printArticles);
+  listenerId('article-details', handleDetailArticle);
+  //listenerId('dropdown-menu', setCategory);
+  listenerId('up-down', actions.upDownScroll);
+  listenerId('add-meduza', actions.addMeduza);
+  byClass('header-container')[0].addEventListener('click', handleDropdown);
+  window.addEventListener('scroll', actions.scrollListener);
+}());

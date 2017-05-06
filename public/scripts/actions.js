@@ -104,25 +104,20 @@ const actions = (function () {
     return Object.keys(obj).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(obj[k])}`).join('&');
   }
 
-  function printArticles(category) {
+  function printArticles() {
     articleDOM.closeAllDropdowns();
     showArticlesWallFunction();
     articleDOM.removeArticles();
-    if (!category || category.type === 'click') {
-      category = '';
-    } else {
-      FILTER_AUTHOR.value = '';
-      FILTER_DATE_FROM.value = '';
-      FILTER_DATE_TO.value = '';
-    }
+
     const ERROR_TEXT = 'Нет статей, удовлетворяющих введенным параметрам!';
+    const from = new Date(FILTER_DATE_FROM.value);
+    const to = new Date(FILTER_DATE_TO.value);
     const filterConfig = {
       skip: 0,
-      top: 6,
-      category,
+      amount: 6,
       author: FILTER_AUTHOR.value,
-      from: new Date(FILTER_DATE_FROM.value),
-      to: new Date(FILTER_DATE_TO.value),
+      dateFrom: from.getTime(),
+      dateTo: to.getTime(),
     };
     const tags = FILTER_TAGS.value.replace(/#/g, '').trim().split(' ');
     if (tags[0] !== '') {
@@ -132,11 +127,12 @@ const actions = (function () {
     let paginationParams = 0;
     requests.sendGetHttp(`articles?${query}`).then(
       (response) => {
-        response = JSON.parse(response);
-        paginationParams = pagination.init(response.length, filter);
-        const ARRAY_TO_SHOW = response.array;
+        const res = JSON.parse(response);
+        console.log(res);
+        paginationParams = pagination.init(res.total, filter);
+        const ARRAY_TO_SHOW = res.array;
         ARRAY_TO_SHOW.forEach(item => item.createdAt = new Date(item.createdAt));
-        if (response.length !== 0) {
+        if (ARRAY_TO_SHOW.length !== 0) {
           displayArticles(ARRAY_TO_SHOW);
           return;
         }
@@ -380,7 +376,7 @@ const actions = (function () {
       (resolve) => {
         byId('meduza').value = '';
         const article = JSON.parse(resolve);
-        
+
         PHOTO.value = article.photo;
         TITLE.value = article.title;
         SUMMARY.value = article.summary;

@@ -1,10 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const controller = require('../controllers/articles');
 
 const router = express.Router();
-
-router.use(bodyParser.json());
 
 router.get('/', controller.getArticles);
 router.get('/:id', controller.getArticleByID);

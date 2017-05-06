@@ -1,89 +1,58 @@
 const db = require('../db');
+const ObjectID = require('mongodb').ObjectID;
 
-db.connect();
-db.loadArticles();
+function getArticles(options, filter, cb) {
+  db.articles().find(filter).sort(options.sort).toArray(cb);
+  /*db.articles().aggregate([
+    { $match: filter },
 
-exports.getArticles = function (skip, top, filterConfig, category) {
-  return new Promise(resolve => resolve(getArticles(skip, top, filterConfig, category)));
-};
+    { $group: { _id: '$_id', article: { $push: '$$ROOT' } } },
+    { $project: { article: 1, _id: 0 } },
+    { $group: { _id: null, total: { $sum: 1 }, articles: { $push: '$$ROOT' } } },
+    { $sort: options.sort },
+    { $skip: options.skip },
+    { $limit: options.limit },
+    { $project: { total: 1, articles: 1, _id: 0 } }
+  ], cb);*/
+}
 
-exports.getArticleByID = function getArticleByID(id) {
-  return new Promise(resolve => resolve(db.get().articles.findOne({ _id: id })));
-};
+function getArticleByID(id, cb) {
+  const fieldId = { _id: ObjectID(id) };
+  db.articles().findOne(fieldId, cb);
+}
 
-exports.createArticle = function (article) {
-  return new Promise((resolve, reject) => {
-    if (validateArticle(article)) {
-      resolve(db.get().articles.save(article));
-      return;
-    }
-    reject();
-  });
-};
-
-exports.updateArticle = function (newArticle) {
-  return new Promise((resolve, reject) => {
-    const result = db.get().articles.update({ _id: newArticle._id }, newArticle);
-    if (result.updated === 1) {
-      resolve();
-      return;
-    }
-    reject();
-  });
-};
-
-exports.removeArticle = function (id) {
-  return new Promise((resolve, reject) => {
-    if (db.get().articles.findOne({ _id: id })) {
-      resolve(db.get().articles.update({ _id: id }, { deleted: true }));
-      return;
-    }
-    reject();
-  });
-};
-
-function getArticles(skip, top, filterConfig, category) {
-  if (category) {
-    if (category === 'Все') {
-      const result = db.get().articles.find({ deleted: false });
-      return { length: result.length, array: result.slice(skip, top) };
-    }
-    const result = db.get().articles.find({ mainCategory: category, deleted: false });
-    return { length: result.length, array: result.slice(skip, top) };
+function createArticle(article, cb) {
+  if (isValidArticle(article)) {
+    return db.articles().insertOne(article, cb);
   }
-  if (filterConfig) {
-    const result = db.get().articles.find().filter((item) => {
-      if (item.deleted) {
-        return false;
-      }
-      if (filterConfig.author && item.author !== filterConfig.author) {
-        return false;
-      }
-      if (filterConfig.date) {
-        if (filterConfig.date.from && new Date(item.createdAt) < filterConfig.date.from) {
-          return false;
-        }
-        if (filterConfig.date.to && new Date(item.createdAt) > filterConfig.date.to) {
-          return false;
-        }
-      }
-      if (filterConfig.tags && !filterConfig.tags.every(fTag =>
-        item.tags.some(tag => tag === fTag))) {
-        return false;
-      }
-      return true;
-    });
-    return { length: result.length, array: result.slice(skip, top) };
-  }
-  const array = db.get().articles.find({ deleted: false });
-  return { length: array.length, array: array.slice(skip, top) };
+  cb({ err: 'Invalid article' });
 }
 
-function validateArticle(article) {
-  return article && article.title.length !== 0 &&
-    article.summary.length !== 0 && article.content.length !== 0;
+function updateArticle(id, article, cb) {
+  const fieldId = { _id: ObjectID(id) };
+  const upgrade = { $set: article };
+  db.articles().updateOne(fieldId, upgrade, cb);
 }
 
-function sort(array) {
-  return array.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+function removeArticle(id, cb) {
+  const fieldId = { _id: ObjectID(id) };
+  const deleted = { $set: { deleted: true } };
+  db.articles().updateOne(fieldId, deleted, cb);
 }
+
+
+function isValidArticle(article) {
+  const isValid = article &&
+    article.title.length &&
+    article.summary.length &&
+    article.content.length;
+  return isValid;
+}
+
+module.exports = {
+  getArticles,
+  getArticleByID,
+  createArticle,
+  updateArticle,
+  removeArticle,
+};
