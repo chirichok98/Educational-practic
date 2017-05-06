@@ -1,22 +1,20 @@
-const Users = require('../controllers/users');
-const Passport = require('../models/passport');
+const users = require('../controllers/users');
+const passport = require('../models/passport');
 
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
-const SessionStore = require('connect-diskdb')(session);
+const MongoStore = require('connect-mongo')(session);
 const router = require('express').Router();
 
-const storeOptions = {
-  path: './database',
-  name: 'sessions',
-};
-const storeDisk = new SessionStore(storeOptions);
 const sessionOptions = {
   secret: 'MY_SECRET',
-  resave: false,
   saveUninitialized: false,
-  store: storeDisk
+  resave: false,
+  store: new MongoStore({
+    url: 'mongodb://localhost:27017/chirich',
+    touchAfter: 24 * 3600
+  })
 };
 
 router.use(cookieParser());
@@ -25,13 +23,11 @@ router.use(session(sessionOptions));
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 
-router.use(Passport.initialize());
-router.use(Passport.session());
+router.use(passport.initialize());
+router.use(passport.session());
 
-router.post('/login', Users.login);
-
-router.get('/logout', Users.logout);
-
-router.get('/user', Users.getCurrentUser);
+router.post('/login', users.login);
+router.get('/logout', users.logout);
+router.get('/user', users.getCurrentUser);
 
 module.exports = router;

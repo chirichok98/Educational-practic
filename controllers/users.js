@@ -1,24 +1,23 @@
-const Passport = require('../models/passport');
+const passport = require('../models/passport');
 
-exports.getCurrentUser = function (req, res) {
+function getCurrentUser(req, res) {
   const sess = req.session;
   res.send(sess.user);
-};
+}
 
-exports.logout = function (req, res) {
+function logout(req, res) {
   req.session.destroy((error) => {
     if (error) {
       res.sendStatus(500);
     }
   });
   res.sendStatus(200);
-};
+}
 
-exports.login = function (req, res) {
-  Passport.authenticate('local', (err, user) => {
+function login(req, res) {
+  passport.authenticate('local', (err, user) => {
     if (!user) {
-      res.sendStatus(401);
-      return;
+      return res.status(401).end();
     }
     const sess = req.session;
     sess.user = user;
@@ -26,4 +25,10 @@ exports.login = function (req, res) {
 
     res.send(sess.user);
   })(req, res);
+}
+
+module.exports = {
+  login,
+  logout,
+  getCurrentUser,
 };

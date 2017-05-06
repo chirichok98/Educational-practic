@@ -1,12 +1,17 @@
 const db = require('../db');
+const ObjectID = require('mongodb').ObjectID;
 
-db.connect();
-db.loadUsers();
+function getUserById(id, cb) {
+  const fieldId = { _id: ObjectID(id) };
+  db.users().findOne(fieldId, cb);
+}
 
-exports.getUserById = function (id) {
-  return new Promise(resolve => resolve(db.get().users.findOne({ _id: id })));
-};
+function getUserByLP(login, password, cb) {
+  const options = { login, password };
+  db.users().findOne(options, cb);
+}
 
-exports.getUserByLP = function (login, password) {
-  return new Promise(resolve => resolve(db.get().users.findOne({ login, password })));
+module.exports = {
+  getUserById,
+  getUserByLP
 };
