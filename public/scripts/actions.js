@@ -37,55 +37,11 @@ const actions = (function () {
   const FILTER_AUTHOR = byId('filter-author');
 
   function init() {
-    requests.sendGetHttp('/user').then(
-      (res) => {
-        if (!res) {
-          user = null;
-          fillArrayFirstTime();
-          return;
-        }
-        res = JSON.parse(res);
-        user = res.login || null;
-        fillArrayFirstTime();
-        articleDOM.checkUser(user);
-      },
-      () => console.log('errrrorororororor')
-    );
+    authorization.startUser(fillArrayFirstTime);
   }
 
   function fillArrayFirstTime() {
     printArticles();
-  }
-
-  function loginFunction() {
-    if (LOGIN_FORM.login.value !== '') {
-      user = {
-        login: LOGIN_FORM.login.value,
-        password: LOGIN_FORM.password.value,
-      };
-
-      requests.sendPostHttp('/login', user).then(
-        (res) => {
-          articleDOM.checkUser(res.login);
-        },
-        rej => console.log('errroororororroororororo')
-      );
-    }
-  }
-
-  function logoutFunction() {
-    requests.sendGetHttp('/logout').then(
-      () => {
-        user = null;
-        LOGIN_FORM.login.value = '';
-        LOGIN_FORM.password.value = '';
-        articleDOM.checkUser(user);
-        if (!ADD_ARTICLE.classList.contains('display-none')) {
-          showArticlesWallFunction();
-        }
-      },
-      () => console.log('errrrorororororor')
-    );
   }
 
   function clearAddForm() {
@@ -181,7 +137,6 @@ const actions = (function () {
       photo: PHOTO.value,
       title: TITLE.value,
       summary: SUMMARY.value,
-      author: user,
       content: CONTENT.value,
       tags: [].slice.call(TAGS).map(element => element.value),
     };
@@ -220,7 +175,6 @@ const actions = (function () {
   function removeArticle(id) {
     requests.sendDeleteHttp(`/articles/${id}`).then(
       (response) => {
-        articleDOM.removeArticle(id);
         printArticles();
         showArticlesWallFunction();
       },
@@ -431,9 +385,7 @@ const actions = (function () {
 
   return {
     init,
-
-    loginFunction,
-    logoutFunction,
+    
     addArticle,
     editArticle,
     removeArticle,

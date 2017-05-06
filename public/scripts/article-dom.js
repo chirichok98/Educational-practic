@@ -25,60 +25,28 @@ const articleDOM = (function () {
   function showFilter() {
     if (FILTER_BUTTON.style.backgroundImage === 'url("../images/close.png")') {
       closeAllDropdowns();
-    } else {
-      FILTER_FIELD.classList.remove('display-none');
-      FILTER_BUTTON.style.backgroundImage = 'url(../images/close.png)';
+      return;
     }
+    FILTER_FIELD.classList.remove('display-none');
+    FILTER_BUTTON.style.backgroundImage = 'url(../images/close.png)';
   }
 
   function showSearch() {
     if (SEARCH_BUTTON.style.backgroundImage === 'url("../images/close.png")') {
       closeAllDropdowns();
-    } else {
-      SEARCH_FIELD.classList.remove('display-none');
-      SEARCH_BUTTON.style.backgroundImage = 'url(../images/close.png)';
+      return;
     }
+    SEARCH_FIELD.classList.remove('display-none');
+    SEARCH_BUTTON.style.backgroundImage = 'url(../images/close.png)';
   }
 
   function showMenu() {
     if (BURGER_BUTTON.style.backgroundImage === 'url("../images/close.png")') {
       closeAllDropdowns();
-    } else {
-      BURGER_FIELD.classList.remove('display-none');
-      BURGER_BUTTON.style.backgroundImage = 'url(../images/close.png)';
+      return;
     }
-  }
-
-  function displayAdditionalButtons(user) {
-    const articles = byClass('addition-buttons');
-    if (user) {
-      byId('detail-additional-buttons').classList.remove('display-none');
-      [].forEach.call(articles, (item) => {
-        item.classList.remove('display-none');
-      });
-    } else {
-      byId('detail-additional-buttons').classList.add('display-none');
-      [].forEach.call(articles, (item) => {
-        item.classList.add('display-none');
-      });
-    }
-  }
-
-  function checkUser(user) {
-    const login = byClass('log-in')[0];
-    const logout = byClass('log-out')[0];
-    if (user) {
-      qerSel(logout, '.user-name').value = user;
-      login.classList.add('display-none');
-      logout.classList.remove('display-none');
-      byClass('user-name')[0].textContent = user;
-    } else {
-      qerSel(login, 'input[name="login"]').value = '';
-      qerSel(login, 'input[name="password"]').value = '';
-      logout.classList.add('display-none');
-      login.classList.remove('display-none');
-    }
-    displayAdditionalButtons(user);
+    BURGER_FIELD.classList.remove('display-none');
+    BURGER_BUTTON.style.backgroundImage = 'url(../images/close.png)';
   }
 
   function renderArticles(articles) {
@@ -109,22 +77,7 @@ const articleDOM = (function () {
     const articlesNodes = renderArticles(articles);
     articlesNodes.forEach((node) => {
       ARTICLE_LIST_NODE.appendChild(node);
-      return true;
     });
-  }
-
-  function addArticle(article) {
-    const newArticle = renderArticle(article);
-    const amount = ARTICLE_LIST_NODE.childNodes.length;
-    if (newArticle) {
-      if (amount !== 0) {
-        ARTICLE_LIST_NODE.insertBefore(newArticle, ARTICLE_LIST_NODE.childNodes[0]);
-        return true;
-      }
-      ARTICLE_LIST_NODE.appendChild(newArticle);
-      return true;
-    }
-    return false;
   }
 
   function removeArticles() {
@@ -132,37 +85,10 @@ const articleDOM = (function () {
     return true;
   }
 
-  function removeArticle(id) {
-    const node = byId(id);
-    if (node) {
-      node.parentNode.removeChild(node);
-      return true;
-    }
-    return false;
-  }
-
-  function editArticle(id, article) {
-    const newArticle = byId(id);
-    if (newArticle) {
-      newArticle.style.background = `linear-gradient(rgba(0, 0, 0, 0.5), 
-        rgba(0, 0, 0, 0.5)), url('${article.photo}') no-repeat`;
-      qerSel(newArticle, '.content-main-category').textContent = article.mainCategory;
-      qerSel(newArticle, '.content-title').textContent = article.title;
-      qerSel(newArticle, '.content-tags').textContent = article.tags.join(' ');
-      return true;
-    }
-    return false;
-  }
-
-
   return {
     init,
     showArticles,
-    addArticle,
-    removeArticle,
-    editArticle,
     removeArticles,
-    checkUser,
     closeAllDropdowns,
     showFilter,
     showMenu,

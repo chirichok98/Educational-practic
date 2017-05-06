@@ -63,8 +63,8 @@ function handleDetailArticle(event) {
 }
 
 (function () {
-  listenerId('login-button', actions.loginFunction);
-  listenerId('logout-button', actions.logoutFunction);
+  listenerId('login-button', authorization.logInFunc);
+  listenerId('logout-button', authorization.logOutFunc);
   listenerId('add-form-button', actions.showAddFormFunction);
   listenerId('articles-list', handleForArticle);
   listenerId('photo', actions.showExamplePhoto);

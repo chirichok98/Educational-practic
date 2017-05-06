@@ -15,9 +15,9 @@
     },
     "globals": {
         "document": false,
-        "user": true,
         "window": false,
         "XMLHttpRequest": false,
+        "authorization": false,
         "articleDOM": false,
         "actions": false,
         "pagination": false,
