@@ -3,17 +3,6 @@ const ObjectID = require('mongodb').ObjectID;
 
 function getArticles(options, filter, cb) {
   db.articles().find(filter).sort(options.sort).toArray(cb);
-  /*db.articles().aggregate([
-    { $match: filter },
-
-    { $group: { _id: '$_id', article: { $push: '$$ROOT' } } },
-    { $project: { article: 1, _id: 0 } },
-    { $group: { _id: null, total: { $sum: 1 }, articles: { $push: '$$ROOT' } } },
-    { $sort: options.sort },
-    { $skip: options.skip },
-    { $limit: options.limit },
-    { $project: { total: 1, articles: 1, _id: 0 } }
-  ], cb);*/
 }
 
 function getArticleByID(id, cb) {

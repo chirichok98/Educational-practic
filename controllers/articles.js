@@ -33,21 +33,6 @@ const makeArticle = {
   }
 };
 
-function makeFilterQuery(filter, options) {
-  const params = [
-    { $match: filter },
-
-    { $group: { _id: '$_id', article: { $push: '$$ROOT' } } },
-    { $project: { article: 1, _id: 0 } },
-    { $group: { _id: null, total: { $sum: 1 }, articles: { $push: '$$ROOT' } } },
-    { $sort: options.sort },
-    { $skip: options.skip },
-    { $limit: options.limit },
-    { $project: { total: 1, articles: 1, _id: 0 } }
-  ];
-  return params;
-}
-
 function makeFilter(request) {
   const q = request.query;
   const author = authorOption(q.author);
@@ -98,21 +83,9 @@ function parseDate(date) {
   return Number(date);
 }
 
-function parseResponse(res) {
-  const total = res[0].total;
-  const articles = res[0].articles.map(item => item.article[0]);
-  const result = {
-    total,
-    articles
-  };
-  return result;
-}
-
 function getArticles(req, res) {
   const options = makeFilterParams(req);
   const filter = makeFilter(req);
-
-  //const params = //makeFilterQuery(filter, options);
 
   Articles.getArticles(options, filter, (err, ans) => {
     if (err) {
