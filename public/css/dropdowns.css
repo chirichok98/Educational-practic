@@ -1,22 +1,25 @@
 .dropdown-menu { 
+    padding: 5px;
+
     text-align: center;
 
     background-color: #EEEEEE;
 }
 
 .dropdown-menu .dropdown-element {
-    font-size: 16px;
+    font-size: 18px;
 
-    padding: 5px;
+    margin-top: 5px;
+    padding: 15px;
 
     color: #9E9E9E; 
+    display: inline-block;
 
     cursor: pointer;
 }
 
 .dropdown-menu .dropdown-element:hover {
-    font-size: 20px;
-
+    
     color: #212121;
 }
 
