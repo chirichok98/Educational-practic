@@ -1,4 +1,4 @@
-const authorization = (function () {
+const authentication = (function () {
   const NONE = 'display-none';
   const LOGIN = byClass('log-in')[0];
   const LOGOUT = byClass('log-out')[0];
@@ -8,7 +8,7 @@ const authorization = (function () {
   const EXTRA_BUTTONS = byClass('addition-buttons');
   const EXTRA_BUTTONS_DETAIL = byId('detail-additional-buttons');
 
-  function startUser(cb) {
+  function getCurrentUser(cb) {
     requests.sendGetHttp('/user').then(
       (res) => {
         if (!res) {
@@ -19,6 +19,7 @@ const authorization = (function () {
         const user = res.login || null;
         cb();
         checkUser(user);
+        return user;
       },
       // TODO server can't send username
       () => console.log
@@ -72,7 +73,8 @@ const authorization = (function () {
     LOGIN_FORM.password.value = '';
   }
 
-  function checkUser(user) {
+  function checkUser() {
+    const user = getCurrentUser();
     if (user) {
       userIn(user);
       return;
@@ -87,8 +89,7 @@ const authorization = (function () {
   }
 
   function userOut() {
-    LOGIN_FORM.login.value = '';
-    LOGIN_FORM.password.value = '';
+    cleanLogFields();
     showLogForm(false);
     showExtraButtons();
   }
@@ -114,9 +115,8 @@ const authorization = (function () {
   }
 
   return {
-    startUser,
+    getCurrentUser,
     logInFunc,
     logOutFunc,
-    checkUser,
   };
 }());

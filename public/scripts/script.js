@@ -1,5 +1,3 @@
-user = null;
-
 (function () {
   articleDOM.init();
   actions.init();
@@ -19,10 +17,6 @@ function setCategory(event) {
 function handleDropdown(event) {
   if (event.target.className === 'header-filter' || event.target.id === 'button-filter') {
     articleDOM.showFilter();
-    return;
-  }
-  if (event.target.className === 'header-search' || event.target.id === 'button-search') {
-    articleDOM.showSearch();
     return;
   }
   if (event.target.className === 'header-burger' || event.target.id === 'button-burger') {
@@ -63,8 +57,8 @@ function handleDetailArticle(event) {
 }
 
 (function () {
-  listenerId('login-button', authorization.logInFunc);
-  listenerId('logout-button', authorization.logOutFunc);
+  listenerId('login-button', authentication.logInFunc);
+  listenerId('logout-button', authentication.logOutFunc);
   listenerId('add-form-button', actions.showAddFormFunction);
   listenerId('articles-list', handleForArticle);
   listenerId('photo', actions.showExamplePhoto);
@@ -73,7 +67,7 @@ function handleDetailArticle(event) {
   listenerId('edit-article-button', actions.editArticle);
   listenerId('filter-button', actions.printArticles);
   listenerId('article-details', handleDetailArticle);
-  //listenerId('dropdown-menu', setCategory);
+  // listenerId('dropdown-menu', setCategory);
   listenerId('up-down', actions.upDownScroll);
   listenerId('add-meduza', actions.addMeduza);
   byClass('header-container')[0].addEventListener('click', handleDropdown);

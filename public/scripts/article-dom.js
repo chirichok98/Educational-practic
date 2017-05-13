@@ -1,8 +1,6 @@
 const articleDOM = (function () {
   let ARTICLE_TEMPLATE;
   let ARTICLE_LIST_NODE;
-  const SEARCH_FIELD = byId('dropdown-search');
-  const SEARCH_BUTTON = byId('button-search');
   const FILTER_FIELD = byId('dropdown-filter');
   const FILTER_BUTTON = byId('button-filter');
   const BURGER_FIELD = byId('dropdown-menu');
@@ -14,8 +12,6 @@ const articleDOM = (function () {
   }
 
   function closeAllDropdowns() {
-    SEARCH_FIELD.classList.toggle('display-none', true);
-    SEARCH_BUTTON.style.backgroundImage = 'url(../images/search.png)';
     FILTER_FIELD.classList.toggle('display-none', true);
     FILTER_BUTTON.style.backgroundImage = 'url(../images/filter.png)';
     BURGER_FIELD.classList.toggle('display-none', true);
@@ -29,15 +25,6 @@ const articleDOM = (function () {
     }
     FILTER_FIELD.classList.remove('display-none');
     FILTER_BUTTON.style.backgroundImage = 'url(../images/close.png)';
-  }
-
-  function showSearch() {
-    if (SEARCH_BUTTON.style.backgroundImage === 'url("../images/close.png")') {
-      closeAllDropdowns();
-      return;
-    }
-    SEARCH_FIELD.classList.remove('display-none');
-    SEARCH_BUTTON.style.backgroundImage = 'url(../images/close.png)';
   }
 
   function showMenu() {
@@ -62,9 +49,8 @@ const articleDOM = (function () {
     qerSel(template, '.content-title').textContent = article.title;
     qerSel(template, '.content-tags').textContent = article.tags.join(' ');
     qerSel(template, '.content-creator').textContent = article.author;
-    qerSel(template, '.content-date').textContent =
-      `${article.createdAt.toLocaleDateString()} 
-      ${article.createdAt.toLocaleTimeString()}`;
+    qerSel(template, '.content-date').textContent = article.createdAt.toLocaleString();
+    const user = authentication.getCurrentUser();
     if (user) {
       qerSel(template, '.addition-buttons').classList.remove('display-none');
       return qerSel(template, '.content').cloneNode(true);
@@ -92,6 +78,5 @@ const articleDOM = (function () {
     closeAllDropdowns,
     showFilter,
     showMenu,
-    showSearch,
   };
 }());

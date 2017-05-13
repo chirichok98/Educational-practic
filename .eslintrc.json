@@ -17,7 +17,7 @@
         "document": false,
         "window": false,
         "XMLHttpRequest": false,
-        "authorization": false,
+        "authentication": false,
         "articleDOM": false,
         "actions": false,
         "pagination": false,

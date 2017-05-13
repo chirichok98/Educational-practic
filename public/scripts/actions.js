@@ -37,7 +37,7 @@ const actions = (function () {
   const FILTER_AUTHOR = byId('filter-author');
 
   function init() {
-    authorization.startUser(fillArrayFirstTime);
+    authentication.init(fillArrayFirstTime);
   }
 
   function fillArrayFirstTime() {
@@ -385,7 +385,7 @@ const actions = (function () {
 
   return {
     init,
-    
+
     addArticle,
     editArticle,
     removeArticle,
