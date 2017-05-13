@@ -1,8 +1,8 @@
 const db = require('../db');
 const ObjectID = require('mongodb').ObjectID;
 
-function getArticles(options, filter, cb) {
-  db.articles().find(filter).sort(options.sort).toArray(cb);
+function getArticles(options, resOptions, filter, cb) {
+  db.articles().find(filter, resOptions).sort(options.sort).toArray(cb);
 }
 
 function getArticleByID(id, cb) {
@@ -14,7 +14,8 @@ function createArticle(article, cb) {
   if (isValidArticle(article)) {
     return db.articles().insertOne(article, cb);
   }
-  cb({ err: 'Invalid article' });
+  const err = { err: 'Invalid article' };
+  cb(err);
 }
 
 function updateArticle(id, article, cb) {

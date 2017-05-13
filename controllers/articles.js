@@ -1,4 +1,5 @@
-const Articles = require('../models/articles');
+const articles = require('../models/articles');
+const util = require('../public/scripts/util');
 
 const makeArticle = {
   create: (request) => {
@@ -33,7 +34,7 @@ const makeArticle = {
   }
 };
 
-function makeFilter(request) {
+function createFilter(request) {
   const q = request.query;
   const author = authorOption(q.author);
   const date = dateOption(q.dateFrom, q.dateTo);
@@ -45,7 +46,7 @@ function makeFilter(request) {
   return filterConfig;
 }
 
-function makeFilterParams(request) {
+function createFilterParams(request) {
   const q = request.query;
   const params = {
     skip: Number(q.skip) || 0,
@@ -69,8 +70,8 @@ function tagsOption(tags) {
 }
 
 function dateOption(dateFrom, dateTo) {
-  const from = parseDate(dateFrom);
-  const to = parseDate(dateTo);
+  const from = util.parseDate(dateFrom);
+  const to = util.parseDate(dateTo);
   if (!from && !to) return null;
   const option = {};
   if (from) option.$gte = from;
@@ -78,16 +79,21 @@ function dateOption(dateFrom, dateTo) {
   return option;
 }
 
-function parseDate(date) {
-  if (date === 'NaN') return null;
-  return Number(date);
+function resolveOptions() {
+  const obj = {
+    content: 0,
+    summary: 0,
+    deleted: 0,
+  };
+  return obj;
 }
 
-function getArticles(req, res) {
-  const options = makeFilterParams(req);
-  const filter = makeFilter(req);
+function getarticles(req, res) {
+  const options = createFilterParams(req);
+  const filter = createFilter(req);
+  const resOptions = resolveOptions();
 
-  Articles.getArticles(options, filter, (err, ans) => {
+  articles.getArticles(options, resOptions, filter, (err, ans) => {
     if (err) {
       return res.status(400).send('Troubles with getting articles!');
     }
@@ -101,7 +107,7 @@ function getArticles(req, res) {
 
 function getArticleByID(req, res) {
   const id = req.params.id;
-  Articles.getArticleByID(id, (err, result) => {
+  articles.getArticleByID(id, (err, result) => {
     if (err) return res.send(err);
     res.send(result);
   });
@@ -109,7 +115,7 @@ function getArticleByID(req, res) {
 
 function createArticle(req, res) {
   const article = makeArticle.create(req);
-  Articles.createArticle(article, (err, result) => {
+  articles.createArticle(article, (err, result) => {
     if (err) return res.send(err);
     res.send(result.ops[0]);
   });
@@ -117,7 +123,7 @@ function createArticle(req, res) {
 
 function removeArticle(req, res) {
   const id = req.params.id;
-  Articles.removeArticle(id, (err) => {
+  articles.removeArticle(id, (err) => {
     if (err) return res.send(err);
     res.status(200).end();
   });
@@ -126,14 +132,14 @@ function removeArticle(req, res) {
 function updateArticle(req, res) {
   const id = req.params.id;
   const article = makeArticle.update(req);
-  Articles.updateArticle(id, article, (err) => {
+  articles.updateArticle(id, article, (err) => {
     if (err) return res.send(err);
     res.status(200).end();
   });
 }
 
 module.exports = {
-  getArticles,
+  getarticles,
   getArticleByID,
   createArticle,
   removeArticle,
