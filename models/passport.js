@@ -25,16 +25,26 @@ const fields = {
 
 passport.use(new LocalStrategy(fields,
   (login, password, done) => {
-    users.getUserByLP(login, password, (err, user) => {
+    users.getUserByLogin(login, (err, user) => {
       if (err) {
         return done(err, false);
       }
       if (!user) {
-        return done(null, false);
+        const e = { err: 'Invalid login' };
+        return done(e, false);
       }
-      done(null, user);
+      checkPassword(user, password, done);
     });
   }
 ));
+
+function checkPassword(user, password, cb) {
+  const res = user.password === password;
+  if (!res) {
+    const e = { err: 'Invalid password' };
+    return cb(e, false);
+  }
+  cb(null, user);
+}
 
 module.exports = passport;

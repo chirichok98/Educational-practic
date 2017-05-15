@@ -16,6 +16,9 @@ function logout(req, res) {
 
 function login(req, res) {
   passport.authenticate('local', (err, user) => {
+    if (err) {
+      return res.status(401).send(err);
+    }
     if (!user) {
       return res.status(401).end();
     }

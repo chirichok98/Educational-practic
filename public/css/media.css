@@ -45,6 +45,22 @@ footer {
 
 @media screen and (max-width: 600px) {
 
+#up-down {
+    height: 30px;
+    width: 20px;
+
+}
+
+#up-down.up {
+    background-size: 100% 100%;
+
+}
+
+#up-down.down {
+    background-size: 100% 100%;
+
+}
+
 .user form input[type=text], .user form input[type=password] {
     font-size: 14px;
     width: 150px;

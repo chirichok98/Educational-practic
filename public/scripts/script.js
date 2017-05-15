@@ -57,8 +57,8 @@ function handleDetailArticle(event) {
 }
 
 (function () {
-  listenerId('login-button', authentication.logInFunc);
-  listenerId('logout-button', authentication.logOutFunc);
+  listenerId('login-button', authentication.logIn);
+  listenerId('logout-button', authentication.logOut);
   listenerId('add-form-button', actions.showAddFormFunction);
   listenerId('articles-list', handleForArticle);
   listenerId('photo', actions.showExamplePhoto);
@@ -69,7 +69,6 @@ function handleDetailArticle(event) {
   listenerId('article-details', handleDetailArticle);
   // listenerId('dropdown-menu', setCategory);
   listenerId('up-down', actions.upDownScroll);
-  listenerId('add-meduza', actions.addMeduza);
   byClass('header-container')[0].addEventListener('click', handleDropdown);
   window.addEventListener('scroll', actions.scrollListener);
 }());

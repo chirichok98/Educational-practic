@@ -2,7 +2,6 @@ const users = require('../controllers/users');
 const passport = require('../models/passport');
 
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const router = require('express').Router();
@@ -17,7 +16,6 @@ const sessionOptions = {
   })
 };
 
-router.use(cookieParser());
 router.use(session(sessionOptions));
 
 router.use(bodyParser.json());

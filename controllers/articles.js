@@ -1,5 +1,4 @@
 const articles = require('../models/articles');
-const util = require('../public/scripts/util');
 
 const makeArticle = {
   create: (request) => {
@@ -70,8 +69,8 @@ function tagsOption(tags) {
 }
 
 function dateOption(dateFrom, dateTo) {
-  const from = util.parseDate(dateFrom);
-  const to = util.parseDate(dateTo);
+  const from = parseDate(dateFrom);
+  const to = parseDate(dateTo);
   if (!from && !to) return null;
   const option = {};
   if (from) option.$gte = from;
@@ -88,7 +87,12 @@ function resolveOptions() {
   return obj;
 }
 
-function getarticles(req, res) {
+function parseDate(date) {
+  if (date === 'NaN') return null;
+  return Number(date);
+}
+
+function getArticles(req, res) {
   const options = createFilterParams(req);
   const filter = createFilter(req);
   const resOptions = resolveOptions();
@@ -139,7 +143,7 @@ function updateArticle(req, res) {
 }
 
 module.exports = {
-  getarticles,
+  getArticles,
   getArticleByID,
   createArticle,
   removeArticle,

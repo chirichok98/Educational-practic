@@ -12,12 +12,12 @@ const authentication = (function () {
     requests.sendGetHttp('/user').then(
       (res) => {
         if (!res) {
-          cb();
+          if (cb) cb();
           return;
         }
         res = JSON.parse(res);
         const user = res.login || null;
-        cb();
+        if (cb) cb();
         checkUser(user);
         return user;
       },
@@ -26,7 +26,7 @@ const authentication = (function () {
     );
   }
 
-  function logInFunc() {
+  function logIn() {
     const login = LOGIN_FORM.login.value;
     const password = LOGIN_FORM.password.value;
     if (login && password) {
@@ -41,7 +41,7 @@ const authentication = (function () {
     console.log('Empty fields of login and/or password');
   }
 
-  function logOutFunc() {
+  function logOut() {
     sendLogOutRequest();
   }
 
@@ -51,8 +51,11 @@ const authentication = (function () {
         const name = res.login;
         checkUser(name);
       },
-      // TODO message about invalid user information
-      rej => console.log
+      (rej) => {
+        rej = JSON.parse(rej);
+        // TODO message about invalid user information
+        console.log(rej.err);
+      }
     );
   }
 
@@ -73,8 +76,7 @@ const authentication = (function () {
     LOGIN_FORM.password.value = '';
   }
 
-  function checkUser() {
-    const user = getCurrentUser();
+  function checkUser(user) {
     if (user) {
       userIn(user);
       return;
@@ -116,7 +118,7 @@ const authentication = (function () {
 
   return {
     getCurrentUser,
-    logInFunc,
-    logOutFunc,
+    logIn,
+    logOut,
   };
 }());

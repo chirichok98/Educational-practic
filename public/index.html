@@ -140,11 +140,8 @@
             <input type="url" id="photo" name="article-photo" placeholder="Url">
             <img src="" id="example-photo" class="display-none">
 
-            <button type="button" class="" id="add-article-button">Опубликовать новость</button>
-            <button type="button" class="display-none" id="edit-article-button">Зафиксировать изменения</button>
-            
-            <input type="url" id="meduza" name="meduza" placeholder="https://meduza.io/bla/bla/bla">
-            <button type="button" id="add-meduza" class="but-exception">Добавить с Meduza.io</button>
+            <button type="button" class="" id="add-article-button">Опубликовать</button>
+            <button type="button" class="display-none" id="edit-article-button">Сохранить</button>
 
             <button type="button" id="go-back-button">На главную</button>
         </form>
@@ -221,8 +218,8 @@
         </article>
     </template>
 
-    <script src="scripts/reductions.js"></script>
-    <script src="scripts/authorization.js"></script>
+    <script src="scripts/util.js"></script>
+    <script src="scripts/authentication.js"></script>
     <script src="scripts/article-dom.js"></script>
     <script src="scripts/requests.js"></script>
     <script src="scripts/actions.js"></script>

@@ -37,7 +37,7 @@ const actions = (function () {
   const FILTER_AUTHOR = byId('filter-author');
 
   function init() {
-    authentication.init(fillArrayFirstTime);
+    authentication.getCurrentUser(fillArrayFirstTime);
   }
 
   function fillArrayFirstTime() {
@@ -296,50 +296,6 @@ const actions = (function () {
     showArticlesWallFunction();
   }
 
-  function convertHtmlToText(html) {
-    const inputText = html;
-    let returnText = `${inputText}`;
-
-    returnText = returnText.replace(/<br>/gi, '\n');
-    returnText = returnText.replace(/<br\s\/>/gi, '\n');
-    returnText = returnText.replace(/<br\/>/gi, '\n');
-
-    returnText = returnText.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, ' $2 ($1)');
-
-    returnText = returnText.replace(/<script.*>[\w\W]{1,}(.*?)[\w\W]{1,}<\/script>/gi, '');
-    returnText = returnText.replace(/<style.*>[\w\W]{1,}(.*?)[\w\W]{1,}<\/style>/gi, '');
-    returnText = returnText.replace(/<(?:.|\s)*?>/g, '');
-
-    returnText = returnText.replace(/(?:(?:\r\n|\r|\n)\s*){2,}/gim, '\n\n');
-
-    returnText = returnText.replace(/ +(?= )/g, '');
-
-    returnText = returnText.replace(/&nbsp;/gi, ' ');
-    returnText = returnText.replace(/&amp;/gi, '&');
-    returnText = returnText.replace(/&quot;/gi, '"');
-    returnText = returnText.replace(/&lt;/gi, '<');
-    returnText = returnText.replace(/&gt;/gi, '>');
-
-    return returnText;
-  }
-
-  function addMeduza() {
-    let url = byId('meduza').value;
-    url = url.replace('https://meduza.io/', '');
-    requests.sendGetHttp(`/meduza?url=${url}`).then(
-      (resolve) => {
-        byId('meduza').value = '';
-        const article = JSON.parse(resolve);
-
-        PHOTO.value = article.photo;
-        TITLE.value = article.title;
-        SUMMARY.value = article.summary;
-        CONTENT.value = convertHtmlToText(article.content);
-      },
-      (reject) => { console.log('Invalid article'); }
-    );
-  }
-
   function upDownScroll() {
     const pageY = window.pageYOffset || document.documentElement.scrollTop;
     const headerHeight = document.getElementsByTagName('header')[0].offsetHeight;
@@ -397,7 +353,6 @@ const actions = (function () {
     showArticlesWallFunction,
     showDetailArticleFunction,
     showDeleteFormFunction,
-    addMeduza,
 
     upDownScroll,
     scrollListener,

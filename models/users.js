@@ -6,12 +6,12 @@ function getUserById(id, cb) {
   db.users().findOne(fieldId, cb);
 }
 
-function getUserByLP(login, password, cb) {
-  const options = { login, password };
+function getUserByLogin(login, cb) {
+  const options = { login };
   db.users().findOne(options, cb);
 }
 
 module.exports = {
   getUserById,
-  getUserByLP
+  getUserByLogin
 };

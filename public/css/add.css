@@ -109,9 +109,10 @@
     border: 3px solid #212121;
 }
 
-.add-article form .example-photo {
+.add-article form #example-photo {
     height: 150px;
     width: auto;
+    max-width: 90%; 
 }
 
 .add-article form .but-exception {

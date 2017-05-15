@@ -35,8 +35,7 @@ const requests = (function () {
           oReq.removeEventListener('load', handle);
           return;
         }
-        const error = new Error(this.statusText);
-        error.code = this.status;
+        const error = this.response;
         reject(error);
       }
 
