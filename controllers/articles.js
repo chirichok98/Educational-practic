@@ -1,4 +1,5 @@
 const articles = require('../models/articles');
+const util = require('../utils/parser');
 
 const makeArticle = {
   create: (request) => {
@@ -69,8 +70,8 @@ function tagsOption(tags) {
 }
 
 function dateOption(dateFrom, dateTo) {
-  const from = parseDate(dateFrom);
-  const to = parseDate(dateTo);
+  const from = util.parseDate(dateFrom);
+  const to = util.parseDate(dateTo);
   if (!from && !to) return null;
   const option = {};
   if (from) option.$gte = from;
@@ -87,11 +88,6 @@ function resolveOptions() {
   return obj;
 }
 
-function parseDate(date) {
-  if (date === 'NaN') return null;
-  return Number(date);
-}
-
 function getArticles(req, res) {
   const options = createFilterParams(req);
   const filter = createFilter(req);
@@ -99,7 +95,7 @@ function getArticles(req, res) {
 
   articles.getArticles(options, resOptions, filter, (err, ans) => {
     if (err) {
-      return res.status(400).send('Troubles with getting articles!');
+      return res.send(err);
     }
     const result = {
       total: ans.length,
