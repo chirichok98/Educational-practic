@@ -1,6 +1,7 @@
 const articleDOM = (function () {
   let ARTICLE_TEMPLATE;
   let ARTICLE_LIST_NODE;
+
   const FILTER_FIELD = byId('dropdown-filter');
   const FILTER_BUTTON = byId('button-filter');
   const BURGER_FIELD = byId('dropdown-menu');
@@ -12,28 +13,43 @@ const articleDOM = (function () {
   }
 
   function closeAllDropdowns() {
-    FILTER_FIELD.classList.toggle('display-none', true);
-    FILTER_BUTTON.style.backgroundImage = 'url(../images/filter.png)';
-    BURGER_FIELD.classList.toggle('display-none', true);
-    BURGER_BUTTON.style.backgroundImage = 'url(../images/menu.png)';
+    display(FILTER_FIELD, true);
+    display(BURGER_FIELD, true);
+    setBackgroundImage(FILTER_BUTTON, 'filter.png');
+    setBackgroundImage(BURGER_BUTTON, 'menu.png');
+  }
+
+  function setBackgroundImage(field, file) {
+    const name = file || 'close.png';
+    const image = `url(../images/${name})`;
+    field.style.backgroundImage = image;
+  }
+
+  function isShownDropdown(field) {
+    const curImage = field.style.backgroundImage;
+    const shown = 'url("../images/close.png")';
+    const res = curImage === shown;
+    return res;
   }
 
   function showFilter() {
-    if (FILTER_BUTTON.style.backgroundImage === 'url("../images/close.png")') {
+    const filter = isShownDropdown(FILTER_BUTTON);
+    if (filter) {
       closeAllDropdowns();
       return;
     }
-    FILTER_FIELD.classList.remove('display-none');
-    FILTER_BUTTON.style.backgroundImage = 'url(../images/close.png)';
+    display(FILTER_FIELD, false);
+    setBackgroundImage(FILTER_BUTTON);
   }
 
   function showMenu() {
-    if (BURGER_BUTTON.style.backgroundImage === 'url("../images/close.png")') {
+    const menu = isShownDropdown(BURGER_BUTTON);
+    if (menu) {
       closeAllDropdowns();
       return;
     }
-    BURGER_FIELD.classList.remove('display-none');
-    BURGER_BUTTON.style.backgroundImage = 'url(../images/close.png)';
+    display(BURGER_FIELD, false);
+    setBackgroundImage(BURGER_BUTTON);
   }
 
   function renderArticles(articles) {
@@ -41,22 +57,45 @@ const articleDOM = (function () {
   }
 
   function renderArticle(article) {
-    const template = ARTICLE_TEMPLATE.content;
-    qerSel(template, '.content').setAttribute('id', article._id);
-    qerSel(template, '.content').style.background = `linear-gradient(rgba(0, 0, 0, 0.5), 
-        rgba(0, 0, 0, 0.5)), url('${article.photo}') no-repeat`;
-    qerSel(template, '.content-main-category').textContent = article.mainCategory;
-    qerSel(template, '.content-title').textContent = article.title;
-    qerSel(template, '.content-tags').textContent = article.tags.join(' ');
-    qerSel(template, '.content-creator').textContent = article.author;
-    qerSel(template, '.content-date').textContent = article.createdAt.toLocaleString();
     const user = authentication.getCurrentUser();
-    if (user) {
-      qerSel(template, '.addition-buttons').classList.remove('display-none');
-      return qerSel(template, '.content').cloneNode(true);
+    const template = ARTICLE_TEMPLATE.content;
+
+    const CONTENT = qerSel(template, '.content');
+    const BUTTONS = qerSel(template, '.addition-buttons');
+    const MAIN_CATEGORY = qerSel(template, '.content-main-category');
+    const TITLE = qerSel(template, '.content-title');
+    const TAGS = qerSel(template, '.content-tags');
+    const AUTHOR = qerSel(template, '.content-creator');
+    const DATE = qerSel(template, '.content-date');
+
+    function fillFields(curUser, curArticle) {
+      const u = curUser;
+      const a = curArticle;
+
+      const backgroundStyle = `linear-gradient(rgba(0, 0, 0, 0.5), 
+        rgba(0, 0, 0, 0.5)), url('${a.photo}') no-repeat`;
+      const backgroundSize = '100% 100%';
+
+      CONTENT.setAttribute('id', a._id);
+      CONTENT.style.background = backgroundStyle;
+      CONTENT.style.backgroundSize = backgroundSize;
+      BUTTONS.dataset.id = a._id;
+
+      MAIN_CATEGORY.textContent = a.mainCategory;
+      TITLE.textContent = a.title;
+      TAGS.textContent = a.tags.join(' ');
+      AUTHOR.textContent = a.author;
+      DATE.textContent = a.createdAt.toLocaleString();
+
+      if (u) {
+        display(BUTTONS, true);
+        return;
+      }
+      display(BUTTONS, false);
     }
-    qerSel(template, '.addition-buttons').classList.add('display-none');
-    return qerSel(template, '.content').cloneNode(true);
+
+    fillFields(user, article);
+    return CONTENT.cloneNode(true);
   }
 
   function showArticles(articles) {

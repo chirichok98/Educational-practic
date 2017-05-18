@@ -53,8 +53,6 @@
     margin: 6px;
 
     color: #FAFAFA;    
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url() no-repeat;
-    background-size: 100% 100%;
     box-shadow: 1.6px 1.6px 1px 0px rgba(0,0,0,0.5);
 
     display: inline-table;

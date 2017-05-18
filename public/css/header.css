@@ -57,7 +57,7 @@ header .logotype {
     padding: 0; 
     margin: 20px;
     
-    background: url("../images/filter.png");
+    background: url(../images/filter.png);
     background-size: 20px;
 }
 
@@ -79,6 +79,6 @@ header .logotype {
     padding: 0; 
     margin: 20px;
     
-    background: url("../images/menu.png") no-repeat;
+    background: url(../images/menu.png) no-repeat;
     background-size: 20px;
 }
