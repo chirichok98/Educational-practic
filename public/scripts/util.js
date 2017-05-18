@@ -13,3 +13,8 @@ function byClass(className) {
 function qerSel(from, query) {
   return from.querySelector(query);
 }
+
+function display(field, option) {
+  const NONE = 'display-none';
+  field.classList.toggle(NONE, option);
+}

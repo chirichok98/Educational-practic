@@ -1,5 +1,4 @@
 const authentication = (function () {
-  const NONE = 'display-none';
   const LOGIN = byClass('log-in')[0];
   const LOGOUT = byClass('log-out')[0];
   const USER_NAME = byClass('user-name')[0];
@@ -15,8 +14,7 @@ const authentication = (function () {
           if (cb) cb();
           return;
         }
-        res = JSON.parse(res);
-        const user = res.login || null;
+        const user = JSON.parse(res).login || null;
         if (cb) cb();
         checkUser(user);
         return user;
@@ -52,9 +50,9 @@ const authentication = (function () {
         checkUser(name);
       },
       (rej) => {
-        rej = JSON.parse(rej);
+        const err = JSON.parse(rej).err;
         // TODO message about invalid user information
-        console.log(rej.err);
+        console.log(err);
       }
     );
   }
@@ -97,8 +95,8 @@ const authentication = (function () {
   }
 
   function showLogForm(param) {
-    LOGIN.classList.toggle(NONE, param);
-    LOGOUT.classList.toggle(NONE, !param);
+    display(LOGIN, param);
+    display(LOGOUT, !param);
   }
 
   function showExtraButtons(user) {
@@ -110,9 +108,9 @@ const authentication = (function () {
   }
 
   function extraButtons(param) {
-    EXTRA_BUTTONS_DETAIL.classList.toggle(NONE, param);
+    display(EXTRA_BUTTONS_DETAIL, param);
     [].forEach.call(EXTRA_BUTTONS, (item) => {
-      item.classList.toggle(NONE, param);
+      display(item, param);
     });
   }
 

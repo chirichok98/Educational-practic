@@ -234,7 +234,7 @@ const actions = (function () {
         DETAIL_DATE.textContent = `${article.createdAt.toLocaleDateString()} ${article.createdAt.toLocaleTimeString()}`;
         DETAIL_PHOTO.setAttribute('src', article.photo);
         DETAIL_CONTENT.textContent = article.content;
-        DETAIL_TAGS.textContent = `#${article.tags.join(' #')}`;
+        DETAIL_TAGS.textContent = `${article.tags.join(' ')}`;
         DETAIL_AUTHOR.textContent = article.author;
 
 

@@ -25,6 +25,7 @@
         "byId": false,
         "byClass": false,
         "qerSel": false,
-        "listenerId": false
+        "listenerId": false,
+        "display": false
     }    
 }

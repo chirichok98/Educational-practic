@@ -2,37 +2,57 @@ const pagination = (function () {
   let TOTAL;
   const PER_PAGE = 6;
 
-  const innerHeight = document.documentElement.clientHeight / 2;
+  const INNER_HEIGHT = document.documentElement.clientHeight / 2;
+  let ARTICLE_LIST;
+  let ARTICLE_WALL;
   let CURRENT_PAGE = 1;
-  let SHOW_MORE_BUTTON;
   let SHOW_MORE_CALLBACK;
 
   function init(total, showMoreCb) {
     TOTAL = total;
     CURRENT_PAGE = 1;
     SHOW_MORE_CALLBACK = showMoreCb;
+    ARTICLE_LIST = byId('articles-list');
+    ARTICLE_WALL = byId('articles-wall');
 
     window.addEventListener('scroll', infiniteScroll);
     if (getTotalPages() <= CURRENT_PAGE) {
-      window.removeEventListener('scroll', infiniteScroll);
-      getParams();
+      removeListener();
     }
     return getParams();
   }
 
   function infiniteScroll() {
-    let lastNode = byId('articles-list').lastChild;
-    let el = lastNode.offsetTop + (lastNode.offsetHeight / 2);
-    const win = window.innerHeight + window.pageYOffset;
+    let lastNode = ARTICLE_LIST.lastChild;
+    let el = countPosition(lastNode);
+    const win = countPosition();
+
     if (getTotalPages() <= CURRENT_PAGE) {
-      window.removeEventListener('scroll', infiniteScroll);
+      removeListener();
     }
-    if (el <= win && !byId('articles-wall').classList.contains('display-none')) {
-      el = lastNode.offsetTop + (lastNode.offsetHeight / 2);
-      lastNode = byId('articles-list').lastChild;
-      const paginationParams = nextPage();
-      SHOW_MORE_CALLBACK(paginationParams.skip, paginationParams.top);
+
+    const isOnWallPage = !ARTICLE_WALL.classList.contains('display-none');
+    const isSuitablePos = el <= win;
+
+    if (isSuitablePos && isOnWallPage) {
+      el = countPosition(lastNode);
+      lastNode = ARTICLE_LIST.lastChild;
+      const pagParams = nextPage();
+      SHOW_MORE_CALLBACK(pagParams.skip, pagParams.top);
     }
+  }
+
+  function countPosition(lastNode) {
+    let pos = 0;
+    pos = window.innerHeight + window.pageYOffset;
+    if (lastNode) {
+      pos = lastNode.offsetTop + (lastNode.offsetHeight / 2);
+    }
+    return pos;
+  }
+
+  function removeListener() {
+    window.removeEventListener('scroll', infiniteScroll);
   }
 
   function getTotalPages() {
