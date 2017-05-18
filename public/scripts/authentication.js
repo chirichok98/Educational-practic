@@ -18,9 +18,7 @@ const authentication = (function () {
         if (cb) cb();
         checkUser(user);
         return user;
-      },
-      // TODO server can't send username
-      () => console.log
+      }
     );
   }
 
@@ -35,8 +33,8 @@ const authentication = (function () {
       sendLogInRequest(user);
       return;
     }
-    // TODO message about empty fields of login or password
-    console.log('Empty fields of login and/or password');
+    const message = 'Empty fields of login and/or password';
+    messageService.showMessage(message);
   }
 
   function logOut() {
@@ -50,9 +48,8 @@ const authentication = (function () {
         checkUser(name);
       },
       (rej) => {
-        const err = JSON.parse(rej).err;
-        // TODO message about invalid user information
-        console.log(err);
+        const err = JSON.parse(rej);
+        messageService.showMessage(err.err);
       }
     );
   }
@@ -62,10 +59,11 @@ const authentication = (function () {
       () => {
         cleanLogFields();
         checkUser();
-        // TODO go away from add or edit form
       },
-      // TODO message about error with logouting
-      () => console.log
+      (error) => {
+        const err = JSON.parse(error);
+        messageService.showMessage(err.err);
+      }
     );
   }
 

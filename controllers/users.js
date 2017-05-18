@@ -8,10 +8,11 @@ function getCurrentUser(req, res) {
 function logout(req, res) {
   req.session.destroy((error) => {
     if (error) {
-      res.sendStatus(500);
+      const err = { err: 'Can`t destroy session!' };
+      res.status(500).send(err);
     }
   });
-  res.sendStatus(200);
+  res.status(200).end();
 }
 
 function login(req, res) {
