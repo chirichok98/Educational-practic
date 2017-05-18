@@ -19,13 +19,15 @@
         "XMLHttpRequest": false,
         "authentication": false,
         "articleDOM": false,
-        "actions": false,
+        "articleService": false,
+        "messageService": false,
         "pagination": false,
         "requests": false,
         "byId": false,
         "byClass": false,
         "qerSel": false,
         "listenerId": false,
+        "byTagName": false,
         "display": false
     }    
 }

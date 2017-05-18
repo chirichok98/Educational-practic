@@ -2,6 +2,10 @@ const articleDOM = (function () {
   let ARTICLE_TEMPLATE;
   let ARTICLE_LIST_NODE;
 
+  const ARTICLES_WALL = byId('articles-wall');
+  const ADD_ARTICLE = byId('add-article');
+  const ARTICLE_DETAILS = byId('article-details');
+  const ERROR = byId('error-form');
   const FILTER_FIELD = byId('dropdown-filter');
   const FILTER_BUTTON = byId('button-filter');
   const BURGER_FIELD = byId('dropdown-menu');
@@ -79,8 +83,6 @@ const articleDOM = (function () {
       CONTENT.setAttribute('id', a._id);
       CONTENT.style.background = backgroundStyle;
       CONTENT.style.backgroundSize = backgroundSize;
-      BUTTONS.dataset.id = a._id;
-
       MAIN_CATEGORY.textContent = a.mainCategory;
       TITLE.textContent = a.title;
       TAGS.textContent = a.tags.join(' ');
@@ -88,10 +90,10 @@ const articleDOM = (function () {
       DATE.textContent = a.createdAt.toLocaleString();
 
       if (u) {
-        display(BUTTONS, true);
+        display(BUTTONS, false);
         return;
       }
-      display(BUTTONS, false);
+      display(BUTTONS, true);
     }
 
     fillFields(user, article);
@@ -110,11 +112,19 @@ const articleDOM = (function () {
     return true;
   }
 
+  function hideAllForms() {
+    display(ARTICLES_WALL, true);
+    display(ADD_ARTICLE, true);
+    display(ARTICLE_DETAILS, true);
+    display(ERROR, true);
+  }
+
   return {
     init,
     showArticles,
     removeArticles,
     closeAllDropdowns,
+    hideAllForms,
     showFilter,
     showMenu,
   };

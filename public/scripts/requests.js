@@ -10,9 +10,8 @@ const requests = (function () {
           oReq.removeEventListener('load', handle);
           return;
         }
-        const error = new Error(this.statusText);
-        error.code = this.status;
-        reject(error);
+        const error = { err: 'Troubles with getting answer from server' };
+        reject(JSON.stringify(error));
       }
 
       oReq.onerror = function () {
@@ -59,8 +58,7 @@ const requests = (function () {
           oReq.removeEventListener('load', handle);
           return;
         }
-        const error = new Error(this.statusText);
-        error.code = this.status;
+        const error = this.response;
         reject(error);
       }
 
@@ -82,9 +80,8 @@ const requests = (function () {
           oReq.removeEventListener('load', handle);
           return;
         }
-        const error = new Error(this.statusText);
-        error.code = this.status;
-        reject(error);
+        const error = { err: 'Troubles with deleting. It may be server error' };
+        reject(JSON.stringify(error));
       }
 
       oReq.onerror = function () {

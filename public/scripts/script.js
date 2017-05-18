@@ -1,56 +1,83 @@
 (function () {
   articleDOM.init();
-  actions.init();
+  articleService.init();
 }());
 
-function goBackFunction() {
-  actions.showArticlesWallFunction();
+function goBack() {
+  articleService.showArticlesWall();
 }
-/*
-function setCategory(event) {
+
+function getCategory(event) {
   const element = event.target;
   if (element.className === 'dropdown-element') {
-    actions.printArticles(element.textContent);
+    // TODO get articles with current category
+    //articleService.printArticles(element.textContent);
   }
-}*/
+}
 
 function handleDropdown(event) {
-  if (event.target.className === 'header-filter' || event.target.id === 'button-filter') {
+  const name = event.target.className;
+  const id = event.target.id;
+
+  const hFilter = 'header-filter';
+  const butFilter = 'button-filter';
+  const hBurger = 'header-burger';
+  const butBurger = 'button-burger';
+
+  const filter = name === hFilter || id === butFilter;
+  const menu = name === hBurger || id === butBurger;
+
+  if (filter) {
     articleDOM.showFilter();
     return;
   }
-  if (event.target.className === 'header-burger' || event.target.id === 'button-burger') {
+  if (menu) {
     articleDOM.showMenu();
   }
 }
 
 function handleForArticle(event) {
-  const id = event.target.offsetParent.id;
-  if (event.target.id === 'edit-button' && id) {
-    actions.showEditFormFunction(id);
+  const ev = event.target;
+  const id = ev.offsetParent.id;
+
+  const edit = ev.id === 'edit-button' && id;
+  const remove = ev.id === 'remove-button' && id;
+  const detail = ev.tagName !== 'main' && id;
+
+  if (edit) {
+    articleService.showEditForm(id);
     return;
   }
-  if (event.target.id === 'remove-button' && id) {
-    actions.showDeleteFormFunction(id);
+  if (remove) {
+    articleService.showDeleteForm(id);
     return;
   }
-  if (event.target.tagName !== 'main' && id) {
-    actions.showDetailArticleFunction(id);
+  if (detail) {
+    articleService.showDetailArticle(id);
   }
 }
 
 function handleDetailArticle(event) {
-  const id = document.getElementById('detail-article-id').value;
-  if (event.target.id === 'detail-edit-article-button' && id) {
-    actions.showEditFormFunction(id);
+  const ev = event.target.id;
+  const id = byId('detail-additional-buttons').dataset.id;
+  const editButton = 'detail-edit-article-button';
+  const removeButton = 'detail-remove-article-button';
+  const backButton = 'go-back-button';
+
+  const edit = ev === editButton && id;
+  const remove = ev === removeButton && id;
+  const back = ev === backButton;
+
+  if (edit) {
+    articleService.showEditForm(id);
     return;
   }
-  if (event.target.id === 'detail-remove-article-button' && id) {
-    actions.showDeleteFormFunction(id);
+  if (remove) {
+    articleService.showDeleteForm(id);
     return;
   }
-  if (event.target.id === 'go-back-button') {
-    actions.showArticlesWallFunction();
+  if (back) {
+    articleService.showArticlesWall();
     const node = byId(id).offsetTop - 225;
     window.scrollTo(0, node);
   }
@@ -59,16 +86,16 @@ function handleDetailArticle(event) {
 (function () {
   listenerId('login-button', authentication.logIn);
   listenerId('logout-button', authentication.logOut);
-  listenerId('add-form-button', actions.showAddFormFunction);
+  listenerId('add-form-button', articleService.showAddForm);
   listenerId('articles-list', handleForArticle);
-  listenerId('photo', actions.showExamplePhoto);
-  listenerId('go-back-button', goBackFunction);
-  listenerId('add-article-button', actions.addArticle);
-  listenerId('edit-article-button', actions.editArticle);
-  listenerId('filter-button', actions.printArticles);
+  listenerId('photo', articleService.showExamplePhoto);
+  listenerId('go-back-button', goBack);
+  listenerId('add-article-button', articleService.addArticle);
+  listenerId('edit-article-button', articleService.editArticle);
+  listenerId('filter-button', articleService.printArticles);
   listenerId('article-details', handleDetailArticle);
-  // listenerId('dropdown-menu', setCategory);
-  listenerId('up-down', actions.upDownScroll);
+  listenerId('dropdown-menu', getCategory);
+  listenerId('up-down', articleService.upDownScroll);
   byClass('header-container')[0].addEventListener('click', handleDropdown);
-  window.addEventListener('scroll', actions.scrollListener);
+  window.addEventListener('scroll', articleService.scrollListener);
 }());

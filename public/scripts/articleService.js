@@ -1,4 +1,4 @@
-const actions = (function () {
+const articleService = (function () {
   let pageYLabel = 0;
   const updownElem = document.getElementById('up-down');
   const LOGIN_FORM = byId('loginForm');
@@ -9,20 +9,16 @@ const actions = (function () {
   const CONTENT = byId('content');
   const TAGS = document.querySelectorAll('.tag');
   const EXAMPLE_PHOTO = byId('example-photo');
-  const ARTICLE_ID = byId('article-id');
   const FORM_TYPE = byId('form-type');
 
   const ADD_ARTICLE_BUTTON = byId('add-article-button');
   const EDIT_ARTICLE_BUTTON = byId('edit-article-button');
-
-  const BACKGROUND = byId('background');
 
   const ARTICLES_WALL = byId('articles-wall');
   const ADD_ARTICLE = byId('add-article');
   const ARTICLE_DETAILS = byId('article-details');
   const ERROR = byId('error-form');
 
-  const DETAIL_ARTICLE_ID = byId('detail-article-id');
   const DETAIL_MAIN_CATEGORY = byId('detail-main-category');
   const DETAIL_TITLE = byId('detail-title');
   const DETAIL_DATE = byId('detail-date');
@@ -30,6 +26,7 @@ const actions = (function () {
   const DETAIL_CONTENT = byId('detail-content');
   const DETAIL_TAGS = byId('detail-tags');
   const DETAIL_AUTHOR = byId('detail-author');
+  const DETAIL_ADDIT_BUT = byId('detail-additional-buttons');
 
   const FILTER_TAGS = byId('filter-tags');
   const FILTER_DATE_FROM = byId('filter-date-from');
@@ -44,16 +41,16 @@ const actions = (function () {
     printArticles();
   }
 
-  function clearAddForm() {
+  function clearFieldsAddForm() {
     PHOTO.value = '';
     TITLE.value = '';
     SUMMARY.value = '';
     CONTENT.value = '';
-    ARTICLE_ID.textContent = '';
+    ADD_ARTICLE.dataset.id = '';
     TAGS.forEach((tag) => {
       tag.value = '';
     });
-    EXAMPLE_PHOTO.classList.toggle('display-none', true);
+    display(EXAMPLE_PHOTO, true);
   }
 
   function serialize(obj) {
@@ -62,7 +59,7 @@ const actions = (function () {
 
   function printArticles() {
     articleDOM.closeAllDropdowns();
-    showArticlesWallFunction();
+    showArticlesWall();
     articleDOM.removeArticles();
 
     const ERROR_TEXT = 'Нет статей, удовлетворяющих введенным параметрам!';
@@ -93,7 +90,7 @@ const actions = (function () {
           return;
         }
         byId('error-name').textContent = ERROR_TEXT;
-        hideAllForms();
+        articleDOM.hideAllForms();
         ERROR.classList.remove('display-none');
       },
       (error) => {
@@ -132,42 +129,31 @@ const actions = (function () {
   }
 
   function addArticle() {
-    const article = {
-      mainCategory: MAIN_CATEGORY.value,
-      photo: PHOTO.value,
-      title: TITLE.value,
-      summary: SUMMARY.value,
-      content: CONTENT.value,
-      tags: [].slice.call(TAGS).map(element => element.value),
-    };
+    const article = fillArticle();
     requests.sendPostHttp('/articles', article).then(
       (response) => {
         printArticles();
-        showArticlesWallFunction();
+        showArticlesWall();
       },
       (error) => {
-        console.log(error);
+        const err = JSON.parse(error);
+        messageService.showMessage(err.err);
       }
     );
   }
 
   function editArticle() {
-    const id = ARTICLE_ID.textContent;
-    const article = {
-      mainCategory: MAIN_CATEGORY.value,
-      photo: PHOTO.value,
-      title: TITLE.value,
-      summary: SUMMARY.value,
-      content: CONTENT.value,
-      tags: [].slice.call(TAGS).map(element => element.value),
-    };
+    const id = ADD_ARTICLE.dataset.id;
+    const article = fillArticle();
+
     requests.sendPutHttp(`/articles/${id}`, article).then(
       (response) => {
         printArticles();
-        showArticlesWallFunction();
+        showArticlesWall();
       },
       (error) => {
-        console.log(error);
+        const err = JSON.parse(error);
+        messageService.showMessage(err.err);
       }
     );
   }
@@ -176,129 +162,137 @@ const actions = (function () {
     requests.sendDeleteHttp(`/articles/${id}`).then(
       (response) => {
         printArticles();
-        showArticlesWallFunction();
+        showArticlesWall();
       },
       (error) => {
-        console.log(error);
+        const err = JSON.parse(error);
+        messageService.showMessage(err.err);
       }
     );
   }
 
-  function hideAllForms() {
-    ARTICLES_WALL.classList.toggle('display-none', true);
-    ADD_ARTICLE.classList.toggle('display-none', true);
-    ARTICLE_DETAILS.classList.toggle('display-none', true);
-    ERROR.classList.toggle('display-none', true);
+  function showDeleteForm(id) {
+    const text = 'Вы уверены, что хотите удалить новость?';
+    messageService.showMessage(text, id);
   }
 
-  function showDeleteFormFunction(id) {
-    BACKGROUND.classList.remove('display-none');
-    byId('article-id').textContent = id;
-    BACKGROUND.addEventListener('click', checkAnswer);
-  }
-
-  function checkAnswer(event) {
-    if (event.target.id === 'agree-delete-button') {
-      const id = byId('article-id').textContent;
-      removeArticle(id);
-      BACKGROUND.classList.add('display-none');
-      showArticlesWallFunction();
-      printArticles();
-    } else if (event.target.id !== 'error-form') {
-      BACKGROUND.classList.add('display-none');
-    }
-  }
-
-  function showAddFormFunction() {
+  function showAddForm() {
+    clearFieldsAddForm();
     window.scrollTo(0, 200);
-    hideAllForms();
-    clearAddForm();
+    articleDOM.hideAllForms();
+
     FORM_TYPE.textContent = 'Добавление новости';
-    EDIT_ARTICLE_BUTTON.classList.toggle('display-none', true);
-    ADD_ARTICLE_BUTTON.classList.toggle('display-none', false);
-    ADD_ARTICLE.classList.remove('display-none');
+
+    display(EDIT_ARTICLE_BUTTON, true);
+    display(ADD_ARTICLE_BUTTON, false);
+    display(ADD_ARTICLE, false);
   }
 
-  function showDetailArticleFunction(id) {
+  function showEditForm(id) {
     window.scrollTo(0, 0);
-    hideAllForms();
-    articleDOM.closeAllDropdowns();
-    let article;
-    requests.sendGetHttp(`/articles/${id}`).then(
-      (response) => {
-        article = JSON.parse(response);
-        article.createdAt = new Date(article.createdAt);
-        DETAIL_ARTICLE_ID.value = id;
-        DETAIL_MAIN_CATEGORY.textContent = article.mainCategory;
-        DETAIL_TITLE.textContent = article.title;
-        DETAIL_DATE.textContent = `${article.createdAt.toLocaleDateString()} ${article.createdAt.toLocaleTimeString()}`;
-        DETAIL_PHOTO.setAttribute('src', article.photo);
-        DETAIL_CONTENT.textContent = article.content;
-        DETAIL_TAGS.textContent = `${article.tags.join(' ')}`;
-        DETAIL_AUTHOR.textContent = article.author;
 
-
-        ARTICLE_DETAILS.classList.remove('display-none');
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  }
-
-  function showEditFormFunction(id) {
-    window.scrollTo(0, 0);
-    ARTICLE_ID.textContent = id;
     FORM_TYPE.textContent = 'Редактирование новости';
-    EDIT_ARTICLE_BUTTON.classList.toggle('display-none', false);
-    ADD_ARTICLE_BUTTON.classList.toggle('display-none', true);
+    ADD_ARTICLE.dataset.id = id;
 
-    let article;
+    display(EDIT_ARTICLE_BUTTON, false);
+    display(ADD_ARTICLE_BUTTON, true);
 
     requests.sendGetHttp(`/articles/${id}`).then(
       (response) => {
-        article = JSON.parse(response);
+        const article = JSON.parse(response);
         article.createdAt = new Date(article.createdAt);
-        MAIN_CATEGORY.value = article.mainCategory;
-        PHOTO.value = article.photo;
-        TITLE.value = article.title;
-        SUMMARY.value = article.summary;
-        CONTENT.value = article.content;
-        for (let i = 0; i < 5; i += 1) {
-          if (article.tags[i]) {
-            TAGS[i].value = article.tags[i];
-          }
-        }
-        showExamplePhoto();
-        hideAllForms();
+
+        fillEditFields(article);
+
         articleDOM.closeAllDropdowns();
-        ADD_ARTICLE.classList.remove('display-none');
+        articleDOM.hideAllForms();
+
+        display(ADD_ARTICLE, false);
       },
       (error) => {
-        console.log(error);
+        const err = JSON.parse(error);
+        messageService.showMessage(err.err);
       }
     );
   }
 
-  function showArticlesWallFunction() {
-    hideAllForms();
-    ARTICLES_WALL.classList.remove('display-none');
+  function fillArticle() {
+    const article = {
+      mainCategory: MAIN_CATEGORY.value,
+      photo: PHOTO.value,
+      title: TITLE.value,
+      summary: SUMMARY.value,
+      content: CONTENT.value,
+      tags: [].slice.call(TAGS).map(element => element.value),
+    };
+    return article;
+  }
+
+  function fillEditFields(article) {
+    MAIN_CATEGORY.value = article.mainCategory;
+    PHOTO.value = article.photo;
+    TITLE.value = article.title;
+    SUMMARY.value = article.summary;
+    CONTENT.value = article.content;
+    for (let i = 0; i < 5; i += 1) {
+      if (article.tags[i]) {
+        TAGS[i].value = article.tags[i];
+      }
+    }
+    showExamplePhoto();
   }
 
   function showExamplePhoto() {
     EXAMPLE_PHOTO.setAttribute('src', PHOTO.value);
-    EXAMPLE_PHOTO.classList.toggle('display-none', false);
+    display(EXAMPLE_PHOTO, false);
+  }
+
+  function fillDetailFields(id, article) {
+    DETAIL_ADDIT_BUT.dataset.id = id;
+    DETAIL_MAIN_CATEGORY.textContent = article.mainCategory;
+    DETAIL_TITLE.textContent = article.title;
+    DETAIL_DATE.textContent = article.createdAt.toLocaleString();
+    DETAIL_PHOTO.setAttribute('src', article.photo);
+    DETAIL_CONTENT.textContent = article.content;
+    DETAIL_TAGS.textContent = `${article.tags.join(' ')}`;
+    DETAIL_AUTHOR.textContent = article.author;
+  }
+
+  function showDetailArticle(id) {
+    window.scrollTo(0, 0);
+
+    articleDOM.closeAllDropdowns();
+    articleDOM.hideAllForms();
+
+    requests.sendGetHttp(`/articles/${id}`).then(
+      (response) => {
+        const article = JSON.parse(response);
+        article.createdAt = new Date(article.createdAt);
+
+        fillDetailFields(id, article);
+
+        display(ARTICLE_DETAILS, false);
+      },
+      (error) => {
+        messageService.showMessage(error);
+      }
+    );
+  }
+
+  function showArticlesWall() {
+    articleDOM.hideAllForms();
+    display(ARTICLES_WALL, false);
   }
 
   function displayArticles(array) {
     articleDOM.closeAllDropdowns();
     articleDOM.showArticles(array);
-    showArticlesWallFunction();
+    showArticlesWall();
   }
 
   function upDownScroll() {
     const pageY = window.pageYOffset || document.documentElement.scrollTop;
-    const headerHeight = document.getElementsByTagName('header')[0].offsetHeight;
+    const headerHeight = byTagName('header')[0].offsetHeight;
 
     switch (this.className) {
       case 'up':
@@ -318,21 +312,22 @@ const actions = (function () {
     const pageY = window.pageYOffset || document.documentElement.scrollTop;
     const innerHeight = document.documentElement.clientHeight / 2;
 
+    const compare = pageY > innerHeight;
     switch (updownElem.className) {
       case '':
-        if (pageY > innerHeight) {
+        if (compare) {
           updownElem.className = 'up';
         }
         break;
 
       case 'up':
-        if (pageY < innerHeight) {
+        if (!compare) {
           updownElem.className = '';
         }
         break;
 
       case 'down':
-        if (pageY > innerHeight) {
+        if (compare) {
           updownElem.className = 'up';
         }
         break;
@@ -348,11 +343,11 @@ const actions = (function () {
     printArticles,
     showExamplePhoto,
 
-    showAddFormFunction,
-    showEditFormFunction,
-    showArticlesWallFunction,
-    showDetailArticleFunction,
-    showDeleteFormFunction,
+    showAddForm,
+    showEditForm,
+    showArticlesWall,
+    showDetailArticle,
+    showDeleteForm,
 
     upDownScroll,
     scrollListener,

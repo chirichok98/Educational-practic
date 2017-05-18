@@ -94,9 +94,7 @@ function getArticles(req, res) {
   const resOptions = resolveOptions();
 
   articles.getArticles(options, resOptions, filter, (err, ans) => {
-    if (err) {
-      return res.send(err);
-    }
+    if (err) return res.status(400).send(err);
     const result = {
       total: ans.length,
       array: ans.slice(options.skip, options.skip + options.limit)
@@ -108,7 +106,7 @@ function getArticles(req, res) {
 function getArticleByID(req, res) {
   const id = req.params.id;
   articles.getArticleByID(id, (err, result) => {
-    if (err) return res.send(err);
+    if (err) return res.status(400).send(err);
     res.send(result);
   });
 }
@@ -116,7 +114,7 @@ function getArticleByID(req, res) {
 function createArticle(req, res) {
   const article = makeArticle.create(req);
   articles.createArticle(article, (err, result) => {
-    if (err) return res.send(err);
+    if (err) return res.status(400).send(err);
     res.send(result.ops[0]);
   });
 }
@@ -124,7 +122,7 @@ function createArticle(req, res) {
 function removeArticle(req, res) {
   const id = req.params.id;
   articles.removeArticle(id, (err) => {
-    if (err) return res.send(err);
+    if (err) return res.status(400).send(err);
     res.status(200).end();
   });
 }
@@ -133,7 +131,7 @@ function updateArticle(req, res) {
   const id = req.params.id;
   const article = makeArticle.update(req);
   articles.updateArticle(id, article, (err) => {
-    if (err) return res.send(err);
+    if (err) return res.status(400).send(err);
     res.status(200).end();
   });
 }

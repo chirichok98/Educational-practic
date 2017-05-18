@@ -78,17 +78,17 @@
                 <button type="button" id="filter-button">Применить</button>
                 </form>
             </div>
-        <!-- HEADER-MENU -->
-        <div id="dropdown-menu" class="dropdown-menu display-none">
-            <div class="dropdown-element">Все</div>
-            <div class="dropdown-element">Развлечения</div>
-            <div class="dropdown-element">Политика</div>
-            <div class="dropdown-element">Экономика</div>
-            <div class="dropdown-element">Культура</div>
-            <div class="dropdown-element">Бизнес</div>
-            <div class="dropdown-element">Наука</div>
-            <div class="dropdown-element">Спорт</div>
-        </div>
+            <!-- HEADER-MENU -->
+            <div id="dropdown-menu" class="dropdown-menu display-none">
+                <div class="dropdown-element">Все</div>
+                <div class="dropdown-element">Развлечения</div>
+                <div class="dropdown-element">Политика</div>
+                <div class="dropdown-element">Экономика</div>
+                <div class="dropdown-element">Культура</div>
+                <div class="dropdown-element">Бизнес</div>
+                <div class="dropdown-element">Наука</div>
+                <div class="dropdown-element">Спорт</div>
+            </div>
     </header>
 
     <!-- MAIN-WALL -->
@@ -105,7 +105,7 @@
     </div>
 
     <!-- ADD-EDIT ARTICLES -->
-    <div id="add-article" class="add-article display-none">
+    <div id="add-article" class="add-article display-none" data-id="">
         <form id="addForm">
             <div id="form-type">Добавление новости</div>
             <label id="article-id" class="display-none"></label>
@@ -150,7 +150,6 @@
     <!-- SEE FULL ARTICLE -->
     <div id="article-details" class="detail-article display-none">
         <form id="detailsForm">
-            <label id="detail-article-id" class="display-none"></label>
             <div class="header-article-detail">
                 <p id="detail-main-category"></p>
                 <p id="detail-title"></p>
@@ -162,9 +161,9 @@
                 <p id="detail-tags"></p>
                 <p>Автор: <span id="detail-author"></span></p>
             </div>
-            <div id="detail-additional-buttons" class="display-none">
-                <button type="button" id="detail-remove-article-button">Удалить новость</button>
-                <button type="button" id="detail-edit-article-button">Редактировать изменения</button>
+            <div id="detail-additional-buttons" class="display-none" data-id="">
+                <button type="button" id="detail-remove-article-button">Удалить</button>
+                <button type="button" id="detail-edit-article-button">Редактировать</button>
             </div>
 
         </form>
@@ -172,11 +171,13 @@
     </div>
 
     <div id="background" class="display-none">
-        <form>
-            <p id="article-id" class="display-none"></p>
-            <p>Вы уверены, что хотите удалить эту новость?</p>
-            <button type="button" class="" id="agree-delete-button">Удалить</button>
-            <button type="button" class="" id="cancel-delete-button">Отмена</button>
+        <form id="message-form" data-id="">
+            <p id="message-text"></p>
+            <button type="button" class="" id="ok-button">Ок</button>
+            <div id="delete-answers" class="display-none">
+                <button type="button" class="" id="agree-delete-button">Удалить</button>
+                <button type="button" class="" id="cancel-delete-button">Отмена</button>
+            </div>
         </form>
     </div>
 
@@ -201,8 +202,8 @@
 
     <!-- TEMPLATE FOR ARTICLE -->
     <template id="template-article">
-        <article class="content grow" id="id">
-            <div class="addition-buttons display-none" data-id="">
+        <article class="content grow" id="">
+            <div class="addition-buttons display-none">
                 <button id="edit-button" class="edit-new">
                 </button>
                 <button id="remove-button" class="remove-new">
@@ -219,10 +220,11 @@
     </template>
 
     <script src="scripts/util.js"></script>
+    <script src="scripts/messageService.js"></script>
     <script src="scripts/authentication.js"></script>
     <script src="scripts/article-dom.js"></script>
     <script src="scripts/requests.js"></script>
-    <script src="scripts/actions.js"></script>
+    <script src="scripts/articleService.js"></script>
     <script src="scripts/pagination.js"></script>
     <script src="scripts/script.js"></script>
 </body>

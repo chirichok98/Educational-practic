@@ -21,7 +21,11 @@ function createArticle(article, cb) {
 function updateArticle(id, article, cb) {
   const fieldId = { _id: ObjectID(id) };
   const upgrade = { $set: article };
-  db.articles().updateOne(fieldId, upgrade, cb);
+  if (isValidArticle(article)) {
+    return db.articles().updateOne(fieldId, upgrade, cb);
+  }
+  const err = { err: 'Invalid article' };
+  cb(err);
 }
 
 function removeArticle(id, cb) {

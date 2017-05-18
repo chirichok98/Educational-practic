@@ -10,6 +10,10 @@ function byClass(className) {
   return document.getElementsByClassName(className);
 }
 
+function byTagName(tagName) {
+  return document.getElementsByTagName(tagName);
+}
+
 function qerSel(from, query) {
   return from.querySelector(query);
 }
