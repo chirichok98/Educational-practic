@@ -138,6 +138,8 @@ const articleService = (function () {
       (error) => {
         const err = JSON.parse(error);
         messageService.showMessage(err.err);
+        printArticles();
+        showArticlesWall();
       }
     );
   }
@@ -154,6 +156,8 @@ const articleService = (function () {
       (error) => {
         const err = JSON.parse(error);
         messageService.showMessage(err.err);
+        printArticles();
+        showArticlesWall();
       }
     );
   }
@@ -167,6 +171,8 @@ const articleService = (function () {
       (error) => {
         const err = JSON.parse(error);
         messageService.showMessage(err.err);
+        printArticles();
+        showArticlesWall();
       }
     );
   }
@@ -274,7 +280,10 @@ const articleService = (function () {
         display(ARTICLE_DETAILS, false);
       },
       (error) => {
-        messageService.showMessage(error);
+        const err = JSON.parse(error);
+        messageService.showMessage(err.err);
+        printArticles();
+        showArticlesWall();
       }
     );
   }

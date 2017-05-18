@@ -112,6 +112,11 @@ function getArticleByID(req, res) {
 }
 
 function createArticle(req, res) {
+  const user = req.session.user;
+  if (!user) {
+    const err = { err: 'Unauthenticated person' };
+    return res.status(400).send(err);
+  }
   const article = makeArticle.create(req);
   articles.createArticle(article, (err, result) => {
     if (err) return res.status(400).send(err);
@@ -120,6 +125,11 @@ function createArticle(req, res) {
 }
 
 function removeArticle(req, res) {
+  const user = req.session.user;
+  if (!user) {
+    const err = { err: 'Unauthenticated person' };
+    return res.status(400).send(err);
+  }
   const id = req.params.id;
   articles.removeArticle(id, (err) => {
     if (err) return res.status(400).send(err);
@@ -128,6 +138,11 @@ function removeArticle(req, res) {
 }
 
 function updateArticle(req, res) {
+  const user = req.session.user;
+  if (!user) {
+    const err = { err: 'Unauthenticated person' };
+    return res.status(400).send(err);
+  }
   const id = req.params.id;
   const article = makeArticle.update(req);
   articles.updateArticle(id, article, (err) => {
