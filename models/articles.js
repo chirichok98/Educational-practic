@@ -1,8 +1,16 @@
 const db = require('../db');
 const ObjectID = require('mongodb').ObjectID;
 
-function getArticles(options, resOptions, filter, cb) {
-  db.articles().find(filter, resOptions).sort(options.sort).toArray(cb);
+function getArticlesByFilter(options, resOptions, filter, cb) {
+  db.articles().find(filter, resOptions)
+  .sort(options.sort)
+  .toArray(cb);
+}
+
+function getArticlesByCategory(options, category, cb) {
+  db.articles().find(category)
+  .sort(options.sort)
+  .toArray(cb);
 }
 
 function getArticleByID(id, cb) {
@@ -44,7 +52,8 @@ function isValidArticle(article) {
 }
 
 module.exports = {
-  getArticles,
+  getArticlesByFilter,
+  getArticlesByCategory,
   getArticleByID,
   createArticle,
   updateArticle,

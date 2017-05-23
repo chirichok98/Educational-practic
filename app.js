@@ -10,13 +10,14 @@ app.use('/', users);
 app.use('/articles', articles);
 
 const url = 'mongodb://localhost:27017/chirich';
+const port = process.env.PORT || 3000;
 
 mongo.connect(url, (err) => {
   if (err) {
     console.log(err);
     return;
   }
-  app.listen(3000, () => {
+  app.listen(port, () => {
     console.log('Server listening on port 3000!');
   });
 });

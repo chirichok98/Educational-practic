@@ -5,7 +5,8 @@ const controller = require('../controllers/articles');
 
 const router = express.Router();
 
-router.get('/', controller.getArticles);
+router.get('/', controller.getArticlesByFilter);
+router.get('/category/', controller.getArticlesByCategory);
 router.get('/:id', controller.getArticleByID);
 router.post('/', controller.createArticle);
 router.put('/:id', controller.updateArticle);

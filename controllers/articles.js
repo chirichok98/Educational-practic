@@ -46,7 +46,7 @@ function createFilter(request) {
   return filterConfig;
 }
 
-function createFilterParams(request) {
+function createPagParams(request) {
   const q = request.query;
   const params = {
     skip: Number(q.skip) || 0,
@@ -88,17 +88,39 @@ function resolveOptions() {
   return obj;
 }
 
-function getArticles(req, res) {
-  const options = createFilterParams(req);
+function categoryOption(request) {
+  const q = request.query;
+  const option = { mainCategory: q.mainCategory };
+  return option;
+}
+
+function parseResult(options, ans) {
+  const result = {
+    total: ans.length,
+    array: ans.slice(options.skip, options.skip + options.limit)
+  };
+  return result;
+}
+
+function getArticlesByFilter(req, res) {
+  const options = createPagParams(req);
   const filter = createFilter(req);
   const resOptions = resolveOptions();
 
-  articles.getArticles(options, resOptions, filter, (err, ans) => {
+  articles.getArticlesByFilter(options, resOptions, filter, (err, ans) => {
     if (err) return res.status(400).send(err);
-    const result = {
-      total: ans.length,
-      array: ans.slice(options.skip, options.skip + options.limit)
-    };
+    const result = parseResult(options, ans);
+    res.send(result);
+  });
+}
+
+function getArticlesByCategory(req, res) {
+  const options = createPagParams(req);
+  const category = categoryOption(req);
+
+  articles.getArticlesByCategory(options, category, (err, ans) => {
+    if (err) return res.status(400).send(err);
+    const result = parseResult(options, ans);
     res.send(result);
   });
 }
@@ -152,7 +174,8 @@ function updateArticle(req, res) {
 }
 
 module.exports = {
-  getArticles,
+  getArticlesByFilter,
+  getArticlesByCategory,
   getArticleByID,
   createArticle,
   removeArticle,
