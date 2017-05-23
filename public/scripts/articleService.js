@@ -34,11 +34,7 @@ const articleService = (function () {
   const FILTER_AUTHOR = byId('filter-author');
 
   function init() {
-    authentication.getCurrentUser(fillArrayFirstTime);
-  }
-
-  function fillArrayFirstTime() {
-    printArticles();
+    authentication.getCurrentUser(useFilter);
   }
 
   function clearFieldsAddForm() {
@@ -57,89 +53,136 @@ const articleService = (function () {
     return Object.keys(obj).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(obj[k])}`).join('&');
   }
 
-  function printArticles() {
-    articleDOM.closeAllDropdowns();
-    showArticlesWall();
-    articleDOM.removeArticles();
+  function defaultParams(skip, top) {
+    const s = skip || 0;
+    const t = top || 6;
+    const config = {
+      skip: s,
+      amount: t,
+    };
+    return config;
+  }
 
-    const ERROR_TEXT = 'Нет статей, удовлетворяющих введенным параметрам!';
+  function makeFilterParams(skip, top) {
+    const params = defaultParams(skip, top);
     const from = new Date(FILTER_DATE_FROM.value);
     const to = new Date(FILTER_DATE_TO.value);
-    const filterConfig = {
-      skip: 0,
-      amount: 6,
-      author: FILTER_AUTHOR.value,
-      dateFrom: from.getTime(),
-      dateTo: to.getTime(),
-    };
-    const tags = FILTER_TAGS.value.replace(/#/g, '').trim().split(' ');
+    const tags = FILTER_TAGS.value.replace(/#/g, '')
+      .trim().split(' ');
+
+    params.author = FILTER_AUTHOR.value;
+    params.dateFrom = from.getTime();
+    params.dateTo = to.getTime();
     if (tags[0] !== '') {
-      filterConfig.tags = tags;
+      params.tags = tags;
     }
-    const query = serialize(filterConfig);
-    let paginationParams = 0;
-    requests.sendGetHttp(`articles?${query}`).then(
+    return params;
+  }
+
+  function makeCategoryParams(categ, skip, top) {
+    const params = defaultParams(skip, top);
+    params.mainCategory = categ;
+    return params;
+  }
+
+  function useCategory(categ) {
+    articleDOM.closeAllDropdowns();
+    showArticlesWall();
+    const ERROR_TEXT = 'Нет статей, удовлетворяющих введенным параметрам!';
+    const config = makeCategoryParams(categ);
+    const query = serialize(config);
+    const req = `/articles/category?${query}`;
+    requests.sendGetHttp(req).then(
       (response) => {
-        const res = JSON.parse(response);
-        console.log(res);
-        paginationParams = pagination.init(res.total, filter);
-        const ARRAY_TO_SHOW = res.array;
-        ARRAY_TO_SHOW.forEach(item => item.createdAt = new Date(item.createdAt));
-        if (ARRAY_TO_SHOW.length !== 0) {
-          displayArticles(ARRAY_TO_SHOW);
-          return;
-        }
-        byId('error-name').textContent = ERROR_TEXT;
-        articleDOM.hideAllForms();
-        ERROR.classList.remove('display-none');
+        parseResult(response, ERROR_TEXT, category, categ);
       },
       (error) => {
-        console.log(error);
+        messageService.showMessage(error);
+      }
+    );
+  }
+
+  function category(paramSkip, paramTop, categ) {
+    articleDOM.closeAllDropdowns();
+    const config = makeCategoryParams(categ, paramSkip, paramTop);
+    const query = serialize(config);
+    const req = `/articles/category?${query}`;
+    requests.sendGetHttp(req).then(
+      (response) => {
+        parseResult(response);
+      },
+      (error) => {
+        messageService.showMessage(error);
+      }
+    );
+  }
+
+  function useFilter() {
+    articleDOM.closeAllDropdowns();
+    showArticlesWall();
+    const ERROR_TEXT = 'Нет статей, удовлетворяющих введенным параметрам!';
+    const filterConfig = makeFilterParams();
+    const query = serialize(filterConfig);
+    const req = `/articles?${query}`;
+    requests.sendGetHttp(req).then(
+      (response) => {
+        parseResult(response, ERROR_TEXT, filter);
+      },
+      (error) => {
+        messageService.showMessage(error);
       }
     );
   }
 
   function filter(paramSkip, paramTop) {
     articleDOM.closeAllDropdowns();
-    const filterConfig = {
-      skip: paramSkip,
-      top: paramSkip + paramTop,
-      author: FILTER_AUTHOR.value,
-      from: new Date(FILTER_DATE_FROM.value),
-      to: new Date(FILTER_DATE_TO.value),
-    };
-    const tags = FILTER_TAGS.value.replace(/#/g, '').trim().split(' ');
-    if (tags[0] !== '') {
-      filterConfig.tags = tags;
-    }
+    const filterConfig = makeFilterParams(paramSkip, paramTop);
     const query = serialize(filterConfig);
-    requests.sendGetHttp(`/articles?${query}`).then(
+    const req = `/articles?${query}`;
+    requests.sendGetHttp(req).then(
       (response) => {
-        response = JSON.parse(response);
-        const ARRAY_TO_SHOW = response.array;
-        ARRAY_TO_SHOW.forEach(item => item.createdAt = new Date(item.createdAt));
-        if (response.length !== 0) {
-          displayArticles(ARRAY_TO_SHOW);
-        }
+        parseResult(response);
       },
       (error) => {
-        console.log(error);
+        messageService.showMessage(error);
       }
     );
+  }
+
+  function parseResult(response, errorText, cb, categ) {
+    const res = JSON.parse(response);
+
+    if (cb) {
+      const paginationParams = pagination.init(res.total, cb, categ);
+    }
+
+    const ARRAY_TO_SHOW = res.array;
+    ARRAY_TO_SHOW.forEach(item => item.createdAt = new Date(item.createdAt));
+    if (ARRAY_TO_SHOW.length !== 0) {
+      displayArticles(ARRAY_TO_SHOW);
+      return;
+    }
+
+    if (errorText) {
+      const errField = byId('error-name');
+      errField.textContent = errorText;
+      articleDOM.hideAllForms();
+      display(ERROR, false);
+    }
   }
 
   function addArticle() {
     const article = fillArticle();
     requests.sendPostHttp('/articles', article).then(
       (response) => {
-        printArticles();
         showArticlesWall();
+        useFilter();
       },
       (error) => {
         const err = JSON.parse(error);
         messageService.showMessage(err.err);
-        printArticles();
         showArticlesWall();
+        useFilter();
       }
     );
   }
@@ -150,14 +193,14 @@ const articleService = (function () {
 
     requests.sendPutHttp(`/articles/${id}`, article).then(
       (response) => {
-        printArticles();
         showArticlesWall();
+        useFilter();
       },
       (error) => {
         const err = JSON.parse(error);
         messageService.showMessage(err.err);
-        printArticles();
         showArticlesWall();
+        useFilter();
       }
     );
   }
@@ -165,14 +208,14 @@ const articleService = (function () {
   function removeArticle(id) {
     requests.sendDeleteHttp(`/articles/${id}`).then(
       (response) => {
-        printArticles();
         showArticlesWall();
+        useFilter();
       },
       (error) => {
         const err = JSON.parse(error);
         messageService.showMessage(err.err);
-        printArticles();
         showArticlesWall();
+        useFilter();
       }
     );
   }
@@ -282,7 +325,7 @@ const articleService = (function () {
       (error) => {
         const err = JSON.parse(error);
         messageService.showMessage(err.err);
-        printArticles();
+        useFilter();
         showArticlesWall();
       }
     );
@@ -290,13 +333,15 @@ const articleService = (function () {
 
   function showArticlesWall() {
     articleDOM.hideAllForms();
+    articleDOM.removeArticles();
     display(ARTICLES_WALL, false);
   }
 
   function displayArticles(array) {
+    articleDOM.hideAllForms();
     articleDOM.closeAllDropdowns();
     articleDOM.showArticles(array);
-    showArticlesWall();
+    display(ARTICLES_WALL, false);
   }
 
   function upDownScroll() {
@@ -349,7 +394,8 @@ const articleService = (function () {
     addArticle,
     editArticle,
     removeArticle,
-    printArticles,
+    useFilter,
+    useCategory,
     showExamplePhoto,
 
     showAddForm,

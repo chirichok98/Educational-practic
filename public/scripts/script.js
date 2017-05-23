@@ -9,9 +9,10 @@ function goBack() {
 
 function getCategory(event) {
   const element = event.target;
-  if (element.className === 'dropdown-element') {
-    // TODO get articles with current category
-    //articleService.printArticles(element.textContent);
+  const condition = element.className === 'dropdown-element';
+  if (condition) {
+    const categ = element.textContent;
+    articleService.useCategory(categ);
   }
 }
 
@@ -92,7 +93,7 @@ function handleDetailArticle(event) {
   listenerId('go-back-button', goBack);
   listenerId('add-article-button', articleService.addArticle);
   listenerId('edit-article-button', articleService.editArticle);
-  listenerId('filter-button', articleService.printArticles);
+  listenerId('filter-button', articleService.useFilter);
   listenerId('article-details', handleDetailArticle);
   listenerId('dropdown-menu', getCategory);
   listenerId('up-down', articleService.upDownScroll);

@@ -7,11 +7,13 @@ const pagination = (function () {
   let ARTICLE_WALL;
   let CURRENT_PAGE = 1;
   let SHOW_MORE_CALLBACK;
+  let CATEGORY;
 
-  function init(total, showMoreCb) {
+  function init(total, showMoreCb, category) {
     TOTAL = total;
     CURRENT_PAGE = 1;
     SHOW_MORE_CALLBACK = showMoreCb;
+    CATEGORY = category;
     ARTICLE_LIST = byId('articles-list');
     ARTICLE_WALL = byId('articles-wall');
 
@@ -38,7 +40,7 @@ const pagination = (function () {
       el = countPosition(lastNode);
       lastNode = ARTICLE_LIST.lastChild;
       const pagParams = nextPage();
-      SHOW_MORE_CALLBACK(pagParams.skip, pagParams.top);
+      SHOW_MORE_CALLBACK(pagParams.skip, pagParams.top, CATEGORY);
     }
   }
 

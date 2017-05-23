@@ -90,7 +90,10 @@ function resolveOptions() {
 
 function categoryOption(request) {
   const q = request.query;
-  const option = { mainCategory: q.mainCategory };
+  const categ = q.mainCategory;
+  const isAll = categ === 'Все';
+  if (isAll) return;
+  const option = { mainCategory: categ };
   return option;
 }
 
