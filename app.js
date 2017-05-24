@@ -9,7 +9,7 @@ app.use(express.static(`${__dirname}/public`));
 app.use('/', users);
 app.use('/articles', articles);
 
-const url = 'mongodb://localhost:27017/chirich';
+const url = 'mongodb://server:6ihfqbl3KZUVSze1@cluster0-shard-00-00-guq8k.mongodb.net:27017,cluster0-shard-00-01-guq8k.mongodb.net:27017,cluster0-shard-00-02-guq8k.mongodb.net:27017/Portal?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin';
 const port = process.env.PORT || 3000;
 
 mongo.connect(url, (err) => {
