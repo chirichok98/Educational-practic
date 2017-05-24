@@ -1,5 +1,5 @@
 const users = require('../controllers/users');
-const passport = require('../models/passport');
+const passport = require('../services/passport');
 
 const bodyParser = require('body-parser');
 const session = require('express-session');

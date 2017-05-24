@@ -1,4 +1,4 @@
-const articles = require('../models/articles');
+const articles = require('../services/articles');
 const util = require('../utils/parser');
 
 const makeArticle = {

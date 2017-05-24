@@ -1,4 +1,4 @@
-const passport = require('../models/passport');
+const passport = require('../services/passport');
 
 function getCurrentUser(req, res) {
   const sess = req.session;
