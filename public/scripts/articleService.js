@@ -90,7 +90,7 @@ const articleService = (function () {
 
   function useCategory(categ) {
     articleDOM.closeAllDropdowns();
-    showArticlesWall();
+    showArticlesWall(true);
     const ERROR_TEXT = 'Нет статей, удовлетворяющих введенным параметрам!';
     const config = makeCategoryParams(categ);
     const query = serialize(config);
@@ -124,7 +124,7 @@ const articleService = (function () {
 
   function useFilter() {
     articleDOM.closeAllDropdowns();
-    showArticlesWall();
+    showArticlesWall(true);
     const ERROR_TEXT = 'Нет статей, удовлетворяющих введенным параметрам!';
     const filterConfig = makeFilterParams();
     const query = serialize(filterConfig);
@@ -184,13 +184,13 @@ const articleService = (function () {
     const article = fillArticle();
     requests.sendPostHttp('/articles', article).then(
       (response) => {
-        showArticlesWall();
+        showArticlesWall(true);
         useFilter();
       },
       (error) => {
         const err = JSON.parse(error);
         messageService.showMessage(err.err);
-        showArticlesWall();
+        showArticlesWall(true);
         useFilter();
       }
     );
@@ -202,13 +202,13 @@ const articleService = (function () {
 
     requests.sendPutHttp(`/articles/${id}`, article).then(
       (response) => {
-        showArticlesWall();
+        showArticlesWall(true);
         useFilter();
       },
       (error) => {
         const err = JSON.parse(error);
         messageService.showMessage(err.err);
-        showArticlesWall();
+        showArticlesWall(true);
         useFilter();
       }
     );
@@ -217,13 +217,13 @@ const articleService = (function () {
   function removeArticle(id) {
     requests.sendDeleteHttp(`/articles/${id}`).then(
       (response) => {
-        showArticlesWall();
+        showArticlesWall(true);
         useFilter();
       },
       (error) => {
         const err = JSON.parse(error);
         messageService.showMessage(err.err);
-        showArticlesWall();
+        showArticlesWall(true);
         useFilter();
       }
     );
@@ -335,14 +335,14 @@ const articleService = (function () {
         const err = JSON.parse(error);
         messageService.showMessage(err.err);
         useFilter();
-        showArticlesWall();
+        showArticlesWall(true);
       }
     );
   }
 
-  function showArticlesWall() {
+  function showArticlesWall(option) {
     articleDOM.hideAllForms();
-    articleDOM.removeArticles();
+    if (option) articleDOM.removeArticles();
     display(ARTICLES_WALL, false);
   }
 

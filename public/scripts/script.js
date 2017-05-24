@@ -4,7 +4,7 @@
 }());
 
 function goBack() {
-  articleService.showArticlesWall();
+  articleService.showArticlesWall(false);
 }
 
 function getCategory(event) {

@@ -61,6 +61,10 @@ footer {
 
 }
 
+.dropdown input[type=text] {
+    width: 100%;
+}
+
 .user form input[type=text], .user form input[type=password] {
     font-size: 14px;
     width: 150px;
