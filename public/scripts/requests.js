@@ -5,7 +5,7 @@ const requests = (function () {
 
       const spinner = byId('loader');
       display(spinner, false);
-      
+
       oReq.open('GET', url);
       oReq.addEventListener('load', handle);
       function handle() {
