@@ -2,7 +2,11 @@ const passport = require('../models/passport');
 
 function getCurrentUser(req, res) {
   const sess = req.session;
-  res.send(sess.user);
+  let user;
+  if (sess.user) {
+    user = sess.user;
+  }
+  res.send(user);
 }
 
 function logout(req, res) {

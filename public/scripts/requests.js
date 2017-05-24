@@ -2,6 +2,10 @@ const requests = (function () {
   function sendGetHttp(url) {
     return new Promise((resolve, reject) => {
       const oReq = new XMLHttpRequest();
+
+      const spinner = byId('loader');
+      display(spinner, false);
+      
       oReq.open('GET', url);
       oReq.addEventListener('load', handle);
       function handle() {

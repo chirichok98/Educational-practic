@@ -1,6 +1,9 @@
 const articleService = (function () {
   let pageYLabel = 0;
-  const updownElem = document.getElementById('up-down');
+
+  const updownElem = byId('up-down');
+  const SPINNER = byId('loader');
+
   const LOGIN_FORM = byId('loginForm');
   const MAIN_CATEGORY = byId('main-category');
   const PHOTO = byId('photo');
@@ -158,6 +161,8 @@ const articleService = (function () {
 
     const ARRAY_TO_SHOW = res.array;
     ARRAY_TO_SHOW.forEach(item => item.createdAt = new Date(item.createdAt));
+
+    display(SPINNER, true);
     if (ARRAY_TO_SHOW.length !== 0) {
       displayArticles(ARRAY_TO_SHOW);
       return;
