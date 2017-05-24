@@ -1,10 +1,12 @@
 const requests = (function () {
-  function sendGetHttp(url) {
+  function sendGetHttp(url, option) {
     return new Promise((resolve, reject) => {
       const oReq = new XMLHttpRequest();
 
-      const spinner = byId('loader');
-      display(spinner, false);
+      if (option) {
+        const spinner = byId('loader');
+        display(spinner, false);
+      }
 
       oReq.open('GET', url);
       oReq.addEventListener('load', handle);
@@ -21,7 +23,6 @@ const requests = (function () {
       oReq.onerror = function () {
         reject(new Error('Network Error'));
       };
-
       oReq.send();
     });
   }

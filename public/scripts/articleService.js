@@ -95,11 +95,12 @@ const articleService = (function () {
     const config = makeCategoryParams(categ);
     const query = serialize(config);
     const req = `/articles/category?${query}`;
-    requests.sendGetHttp(req).then(
+    requests.sendGetHttp(req, true).then(
       (response) => {
         parseResult(response, ERROR_TEXT, category, categ);
       },
       (error) => {
+        display(SPINNER, true);
         messageService.showMessage(error);
       }
     );
@@ -110,11 +111,12 @@ const articleService = (function () {
     const config = makeCategoryParams(categ, paramSkip, paramTop);
     const query = serialize(config);
     const req = `/articles/category?${query}`;
-    requests.sendGetHttp(req).then(
+    requests.sendGetHttp(req, true).then(
       (response) => {
         parseResult(response);
       },
       (error) => {
+        display(SPINNER, true);
         messageService.showMessage(error);
       }
     );
@@ -127,11 +129,12 @@ const articleService = (function () {
     const filterConfig = makeFilterParams();
     const query = serialize(filterConfig);
     const req = `/articles?${query}`;
-    requests.sendGetHttp(req).then(
+    requests.sendGetHttp(req, true).then(
       (response) => {
         parseResult(response, ERROR_TEXT, filter);
       },
       (error) => {
+        display(SPINNER, true);
         messageService.showMessage(error);
       }
     );
@@ -142,11 +145,12 @@ const articleService = (function () {
     const filterConfig = makeFilterParams(paramSkip, paramTop);
     const query = serialize(filterConfig);
     const req = `/articles?${query}`;
-    requests.sendGetHttp(req).then(
+    requests.sendGetHttp(req, true).then(
       (response) => {
         parseResult(response);
       },
       (error) => {
+        display(SPINNER, true);
         messageService.showMessage(error);
       }
     );
