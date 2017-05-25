@@ -92,8 +92,9 @@ function categoryOption(request) {
   const q = request.query;
   const categ = q.mainCategory;
   const isAll = categ === 'Все';
-  if (isAll) return;
-  const option = { mainCategory: categ };
+  const option = { deleted: false };
+  if (isAll) return option;
+  option.mainCategory = categ;
   return option;
 }
 
